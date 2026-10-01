@@ -18,9 +18,9 @@ Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesa
 
 - **Tahap aktif:** Tahap 1, analyzer lokal
 - **Branch:** `feat/food-analyzer`
-- **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (menunggu review owner)
+- **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (disetujui owner 2026-10-01)
 - **Plan:** `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (belum ditulis)
-- **Langkah berikutnya:** owner mereview spec → tulis plan → kerjakan plan per task
+- **Langkah berikutnya:** tulis plan → owner mereview plan → kerjakan plan per task
 
 ---
 
@@ -123,7 +123,7 @@ Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutn
 
 - Satu branch per tahap (Tahap 1: `feat/food-analyzer`), lalu PR ke `main` saat tahapnya selesai.
 - Conventional commits: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`. Tipe `wip:` hanya untuk berhenti di tengah task.
-- **Jangan tambahkan `Co-Authored-By` atau atribusi Claude apa pun** di pesan commit maupun deskripsi PR.
+- **Jangan tambahkan `Co-Authored-By` atau atribusi Claude apa pun** di pesan commit maupun deskripsi PR. Aturan ini juga berlaku untuk commit yang dibuat subagent saat mengerjakan plan, jadi tulis larangan ini di setiap prompt subagent. Setelah commit, cek dengan `git log -1 --format=%B`. Kalau trailer atribusi ikut masuk, perbaiki dengan `git commit --amend`.
 - Jangan push atau membuat PR tanpa diminta.
 - Sebelum commit, cek `git status`. Pastikan file konfigurasi Firebase tidak ikut ter-stage.
 
