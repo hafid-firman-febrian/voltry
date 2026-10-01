@@ -19,8 +19,8 @@ Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesa
 - **Tahap aktif:** Tahap 1, analyzer lokal
 - **Branch:** `feat/food-analyzer`
 - **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (disetujui owner 2026-10-01)
-- **Plan:** `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (belum ditulis)
-- **Langkah berikutnya:** tulis plan → owner mereview plan → kerjakan plan per task
+- **Plan:** `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (16 task, menunggu review owner)
+- **Langkah berikutnya:** owner mereview plan dan memilih cara eksekusi → kerjakan mulai Task 1
 
 ---
 
@@ -59,7 +59,7 @@ Perbarui decision log di spec (tambahkan D16, D17, dan seterusnya) dan bagian te
 - **Framework:** Flutter (iOS + Android), Dart
 - **State:** Riverpod 3, `Notifier` / `AsyncNotifier`. **Provider ditulis manual**, tanpa `riverpod_generator`
 - **Routing:** go_router, dengan `StatefulShellRoute` untuk 2 tab (Home, History)
-- **AI:** Gemini (Flash) lewat `firebase_ai` (Firebase AI Logic, backend Gemini Developer API), dipanggil langsung dari app
+- **AI:** Gemini (`gemini-3.8-flash`) lewat `firebase_ai` (Firebase AI Logic, backend Gemini Developer API), dipanggil langsung dari app
 - **Penyimpanan:** `sqflite` untuk riwayat makan, `shared_preferences` untuk target kalori, file foto di folder documents app
 - **Model:** ditulis manual, **tanpa** Freezed atau json_serializable
 - **Codegen:** tidak ada. Proyek ini tidak memakai `build_runner`
@@ -79,7 +79,8 @@ Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutn
   - `router/`
   - `widgets/`: komponen design system
   - `database/`: membuka sqflite + versi schema
-  - `errors/`: `AppException`
+  - `errors/`: `AppException` dan `errorMessage`
+  - `formatting/`: format angka dan tanggal
   - `providers/`: `databaseProvider`, `sharedPreferencesProvider`
 - `lib/features/<feature>/` punya struktur `domain/`, `data/`, dan `presentation/{controllers,states,pages,widgets}`. Feature yang ada: `analysis`, `meal_log`, `calorie_target`.
 - `test/` mengikuti struktur `lib/`. Versi palsu untuk test ada di `test/fakes/`.
@@ -89,7 +90,7 @@ Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutn
 
 ## Commands
 
-- `flutter run`: jalankan app (butuh `lib/firebase_options.dart` hasil `flutterfire configure`)
+- `flutter run`: jalankan app. Analisis foto butuh konfigurasi Firebase lokal (lihat `docs/setup/firebase.md`)
 - `flutter analyze`: linter
 - `flutter test`: semua test
 - `flutter test test/path/to/file_test.dart`: satu file test
@@ -135,7 +136,7 @@ Aturan di bawah **tidak akan tertangkap `flutter analyze`**. Kalau dilanggar, ko
 
 ### 1. Konfigurasi Firebase tidak pernah di-commit
 
-`lib/firebase_options.dart`, `android/app/google-services.json`, dan `ios/Runner/GoogleService-Info.plist` ada di `.gitignore`. Repo-nya publik dan tidak memakai App Check, jadi siapa pun yang memegang konfigurasi itu bisa menghabiskan kuota Gemini milik owner. Yang di-commit hanya `lib/firebase_options.example.dart`.
+`lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`, dan `firebase.json` ada di `.gitignore`. Repo-nya publik dan tidak memakai App Check, jadi siapa pun yang memegang konfigurasi itu bisa menghabiskan kuota Gemini milik owner. `main.dart` memanggil `Firebase.initializeApp()` tanpa options (spec D16), jadi kode tetap compile dan test tetap jalan tanpa file-file itu. Jangan meng-import `firebase_options.dart`.
 
 ### 2. Output AI tidak pernah dipercaya mentah
 
@@ -149,12 +150,13 @@ Semua jawaban Gemini lewat `parseAnalysis` (`features/analysis/data/analysis_par
 | File foto | `PhotoStorage` |
 | shared_preferences | `CalorieTargetRepository` |
 | firebase_ai | `GeminiFoodAnalyzer` |
+| image_picker (kamera, galeri) | `PhotoPicker` |
 
 Widget → controller → repository/analyzer. Semua diakses lewat provider, supaya bisa diganti versi palsu di test. Aturan ini juga yang membuat Tahap 2 tinggal menambah implementasi `MealLogRepository` baru.
 
 ### 4. Exception pihak ketiga berhenti di layer data
 
-`SocketException`, `TimeoutException`, exception `firebase_ai`, `DatabaseException`, dan `FileSystemException` diubah jadi `sealed class AppException` (`NetworkException`, `AiException`, `StorageException`) di repository, analyzer, atau `PhotoStorage`. UI hanya mengenal `AppException`. "Bukan makanan" bukan exception, tapi hasil `NotFood`.
+`SocketException`, `TimeoutException`, exception `firebase_ai`, `DatabaseException`, `FileSystemException`, dan `PlatformException` dari `image_picker` diubah jadi `sealed class AppException` (`NetworkException`, `AiException`, `StorageException`, `PhotoAccessException`) di repository, analyzer, `PhotoStorage`, atau `PhotoPicker`. UI hanya mengenal `AppException`. "Bukan makanan" bukan exception, tapi hasil `NotFood`.
 
 ### 5. Waktu disimpan sebagai epoch milidetik UTC
 
@@ -166,7 +168,7 @@ Database hanya menyimpan `photo_file_name` (misalnya `3f2a….jpg`). Path lengka
 
 ### 7. Provider ditulis manual, memakai `Notifier` / `AsyncNotifier`
 
-Jangan pakai `@riverpod`, `riverpod_annotation`, atau `build_runner`. Jangan pakai `StateNotifier` atau mengimpor `package:flutter_riverpod/legacy.dart`.
+Jangan pakai `@riverpod`, `riverpod_annotation`, atau `build_runner`. Jangan pakai `StateNotifier` atau mengimpor `package:flutter_riverpod/legacy.dart`. Tipe `Override` di-import dari `package:flutter_riverpod/misc.dart`.
 
 ### 8. Business logic di fungsi murni
 
