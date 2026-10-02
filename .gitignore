@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase config written by `flutterfire configure`. The repo is public and
+# has no App Check, so these stay local (see docs/setup/firebase.md).
+lib/firebase_options.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+firebase.json
