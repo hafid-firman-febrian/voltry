@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/meal_log/presentation/pages/history_page.dart';
 import '../../features/meal_log/presentation/pages/home_page.dart';
+import '../../features/meal_log/presentation/pages/meal_detail_page.dart';
 import 'app_routes.dart';
 import 'app_shell.dart';
 
@@ -31,6 +32,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.mealPattern,
+        builder: (_, state) => MealDetailPage(id: state.pathParameters['id']!),
       ),
     ],
   );
