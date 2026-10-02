@@ -1,6 +1,6 @@
 # Setup Firebase (Gemini lewat Firebase AI Logic)
 
-Langkah ini cukup dilakukan sekali, dan diperlukan supaya analisis foto jalan. Tanpa langkah ini app tetap bisa dibuka, riwayat dan target tetap berfungsi, tetapi setiap analisis gagal dengan pesan "Couldn't analyze this photo".
+Langkah ini cukup dilakukan sekali, dan wajib sebelum app dijalankan. `main.dart` memanggil `Firebase.initializeApp()`, jadi tanpa langkah ini build Android gagal (plugin google-services butuh `google-services.json`) dan app iOS crash saat start. `flutter test` dan `flutter analyze` tetap jalan tanpa konfigurasi ini.
 
 ## 1. Buat project Firebase dan aktifkan AI Logic
 

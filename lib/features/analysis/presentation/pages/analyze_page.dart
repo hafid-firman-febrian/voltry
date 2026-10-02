@@ -20,7 +20,7 @@ import '../widgets/nutrition_card.dart';
 class AnalyzePage extends ConsumerWidget {
   const AnalyzePage({super.key, required this.photo});
 
-  static const loadingAnimation = 'assets/animations/analyzing.json';
+  static const loadingAnimation = 'assets/animations/loading.json';
 
   final XFile photo;
 

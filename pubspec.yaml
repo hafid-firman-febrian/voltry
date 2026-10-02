@@ -66,6 +66,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/animations/loading.json
+
   fonts:
     - family: Urbanist
       fonts:
