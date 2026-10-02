@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/errors/app_exception.dart';
 import '../../../../core/formatting/dates.dart';
 import '../../../../core/formatting/numbers.dart';
-import '../../../../core/providers/core_providers.dart';
+import '../../../../core/providers/today_provider.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/voltry_radius.dart';
@@ -23,7 +23,7 @@ class HistoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final logs = ref.watch(mealLogsControllerProvider);
-    final now = ref.watch(clockProvider)();
+    final today = ref.watch(todayProvider);
     final text = context.textStyles;
 
     return Scaffold(
@@ -52,7 +52,7 @@ class HistoryPage extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 8),
                   child: Text(
-                    '${dayLabel(group.day, now)} · ${formatNumber(group.summary.calories)} kcal',
+                    '${dayLabel(group.day, today)} · ${formatNumber(group.summary.calories)} kcal',
                     style: text.subtitle,
                   ),
                 ),

@@ -28,6 +28,7 @@ Future<void> pumpVoltryApp(
   FakeFoodAnalyzer? analyzer,
   FakePhotoPicker? picker,
   int? storedTarget,
+  DateTime Function()? clock,
   bool settle = true,
 }) async {
   tester.view
@@ -47,7 +48,7 @@ Future<void> pumpVoltryApp(
     photoStorageProvider.overrideWithValue(photos ?? FakePhotoStorage()),
     foodAnalyzerProvider.overrideWithValue(analyzer ?? FakeFoodAnalyzer([])),
     photoPickerProvider.overrideWithValue(picker ?? FakePhotoPicker()),
-    clockProvider.overrideWithValue(() => testNow),
+    clockProvider.overrideWithValue(clock ?? () => testNow),
     idGeneratorProvider.overrideWithValue(() => 'new-meal'),
   ];
 

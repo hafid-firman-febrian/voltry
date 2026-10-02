@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/errors/app_exception.dart';
 import '../../../../core/formatting/dates.dart';
 import '../../../../core/formatting/numbers.dart';
-import '../../../../core/providers/core_providers.dart';
+import '../../../../core/providers/today_provider.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/widgets/calorie_ring.dart';
@@ -30,15 +30,15 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final logs = ref.watch(mealLogsControllerProvider);
-    final now = ref.watch(clockProvider)();
+    final today = ref.watch(todayProvider);
 
     return Scaffold(
       body: SafeArea(
         bottom: false,
         child: switch (logs) {
           AsyncData(:final value) => _HomeContent(
-            today: logsOnDay(value, now),
-            now: now,
+            meals: logsOnDay(value, today),
+            today: today,
           ),
           AsyncError(:final error) => ErrorView(
             message: errorMessage(error),
@@ -52,16 +52,18 @@ class HomePage extends ConsumerWidget {
 }
 
 class _HomeContent extends ConsumerWidget {
-  const _HomeContent({required this.today, required this.now});
+  const _HomeContent({required this.meals, required this.today});
 
-  final List<MealLog> today;
-  final DateTime now;
+  final List<MealLog> meals;
+
+  /// Local midnight of the day shown.
+  final DateTime today;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     final text = context.textStyles;
-    final summary = summarizeDay(today);
+    final summary = summarizeDay(meals);
     final target = ref.watch(calorieTargetControllerProvider);
 
     return ListView(
@@ -74,7 +76,7 @@ class _HomeContent extends ConsumerWidget {
       children: [
         Text('Today', style: text.title),
         Text(
-          formatShortDate(now),
+          formatShortDate(today),
           style: text.bodySmall.copyWith(color: colors.muted),
         ),
         const SizedBox(height: 16),
@@ -118,7 +120,7 @@ class _HomeContent extends ConsumerWidget {
         const SizedBox(height: 20),
         Text("Today's meals", style: text.subtitle),
         const SizedBox(height: 10),
-        if (today.isEmpty)
+        if (meals.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: Text(
@@ -128,7 +130,7 @@ class _HomeContent extends ConsumerWidget {
             ),
           )
         else
-          for (final log in today)
+          for (final log in meals)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: MealTile(

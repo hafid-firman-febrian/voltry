@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/errors/app_exception.dart';
 import '../../../../core/formatting/dates.dart';
-import '../../../../core/providers/core_providers.dart';
+import '../../../../core/providers/today_provider.dart';
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/voltry_radius.dart';
 import '../../../../core/widgets/error_view.dart';
@@ -23,7 +23,7 @@ class MealDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final logs = ref.watch(mealLogsControllerProvider);
-    final now = ref.watch(clockProvider)();
+    final today = ref.watch(todayProvider);
     final colors = context.colors;
     final text = context.textStyles;
 
@@ -52,7 +52,7 @@ class MealDetailPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  '${dayLabel(log.createdAt, now)} · ${formatClock(log.createdAt)}',
+                  '${dayLabel(log.createdAt, today)} · ${formatClock(log.createdAt)}',
                   style: text.bodySmall.copyWith(color: colors.muted),
                 ),
                 const SizedBox(height: 8),

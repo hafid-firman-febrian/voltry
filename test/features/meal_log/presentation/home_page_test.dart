@@ -106,4 +106,58 @@ void main() {
     expect(find.text('of 1,300 kcal'), findsOneWidget);
     expect(find.text('50%'), findsOneWidget);
   });
+
+  group('today follows the calendar', () {
+    final lateSnack = mealLog(
+      id: 'late',
+      foodName: 'Martabak',
+      calories: 900,
+      createdAt: DateTime(2026, 10, 1, 21),
+    );
+
+    testWidgets('after the app resumes on the next morning', (tester) async {
+      var now = DateTime(2026, 10, 1, 23, 50);
+      await pumpVoltryApp(
+        tester,
+        repository: FakeMealLogRepository([lateSnack]),
+        clock: () => now,
+      );
+      expect(find.text('Thu, 1 Oct'), findsOneWidget);
+      expect(find.text('900'), findsOneWidget);
+
+      now = DateTime(2026, 10, 2, 8);
+      // The OS walks through every state on the way to the background and
+      // back, and AppLifecycleListener asserts that order.
+      for (final state in [
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.paused,
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ]) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
+      await tester.pumpAndSettle();
+
+      expect(find.text('Fri, 2 Oct'), findsOneWidget);
+      expect(find.text('Snap your first meal of the day.'), findsOneWidget);
+    });
+
+    testWidgets('at midnight while the app stays open', (tester) async {
+      var now = DateTime(2026, 10, 1, 23, 59);
+      await pumpVoltryApp(
+        tester,
+        repository: FakeMealLogRepository([lateSnack]),
+        clock: () => now,
+      );
+
+      now = DateTime(2026, 10, 2, 0, 0, 30);
+      await tester.pump(const Duration(minutes: 2));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Fri, 2 Oct'), findsOneWidget);
+      expect(find.text('Snap your first meal of the day.'), findsOneWidget);
+    });
+  });
 }

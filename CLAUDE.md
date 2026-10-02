@@ -6,7 +6,7 @@ Voltry adalah app Flutter untuk menganalisis makanan dari foto. User memotret ma
 
 Ini **proyek portofolio untuk Upwork**. Hasil akhirnya repo GitHub, README, dan video demo. App hanya dijalankan oleh owner (tidak ada rilis ke store atau APK publik). Prinsip scope: **kecil dan cepat selesai, dengan satu alur utama yang rapi**. Bahasa UI: Inggris. Satuan: metrik. Light mode saja.
 
-Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D19 di sana menjelaskan alasan tiap keputusan.
+Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D21 di sana menjelaskan alasan tiap keputusan.
 
 `../arsip-voltry` berisi Voltry versi lama (AI fitness coach, Supabase + Claude) yang sudah ditinggalkan. **Spec, plan, dan aturannya tidak berlaku di sini.** Dari arsip itu, yang dipakai hanya design system Candy Sport.
 
@@ -81,7 +81,7 @@ Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutn
   - `database/`: membuka sqflite + versi schema
   - `errors/`: `AppException` dan `errorMessage`
   - `formatting/`: format angka dan tanggal
-  - `providers/`: `databaseProvider`, `sharedPreferencesProvider`
+  - `providers/`: `databaseProvider`, `sharedPreferencesProvider`, `clockProvider`, `idGeneratorProvider`, dan `todayProvider` (hari ini, maju saat tengah malam dan saat app kembali ke foreground)
 - `lib/features/<feature>/` punya struktur `domain/`, `data/`, dan `presentation/{controllers,states,pages,widgets}`. Feature yang ada: `analysis`, `meal_log`, `calorie_target`.
 - `test/` mengikuti struktur `lib/`. Versi palsu untuk test ada di `test/fakes/`.
 - `docs/superpowers/specs/` dan `docs/superpowers/plans/`: spec dan plan per tahap. **Hanya lokal**: di-gitignore dan tidak pernah di-commit.
