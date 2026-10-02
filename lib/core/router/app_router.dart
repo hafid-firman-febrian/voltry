@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../features/analysis/presentation/pages/analyze_page.dart';
 import '../../features/meal_log/presentation/pages/history_page.dart';
 import '../../features/meal_log/presentation/pages/home_page.dart';
 import '../../features/meal_log/presentation/pages/meal_detail_page.dart';
@@ -32,6 +34,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.analyze,
+        // The photo only travels in `extra`, which is lost on a cold start
+        // from a saved location. Without it there is nothing to analyze.
+        redirect: (_, state) => state.extra is XFile ? null : AppRoutes.home,
+        builder: (_, state) => AnalyzePage(photo: state.extra! as XFile),
       ),
       GoRoute(
         path: AppRoutes.mealPattern,
