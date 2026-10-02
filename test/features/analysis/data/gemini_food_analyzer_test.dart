@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:firebase_ai/firebase_ai.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voltry/core/errors/app_exception.dart';
 import 'package:voltry/features/analysis/data/gemini_food_analyzer.dart';
@@ -69,5 +69,22 @@ void main() {
       analyzeWith(() async => throw StateError('malformed body')),
       throwsA(isA<AiException>()),
     );
+  });
+
+  test('prints the original cause to the console while debugging', () async {
+    final logs = <String>[];
+    final original = debugPrint;
+    debugPrint = (message, {wrapWidth}) => logs.add(message ?? '');
+    addTearDown(() => debugPrint = original);
+
+    await expectLater(
+      analyzeWith(
+        () async => throw FirebaseAIException('Quota exceeded: 20 per day'),
+      ),
+      throwsA(isA<AiException>()),
+    );
+
+    expect(logs, hasLength(1));
+    expect(logs.single, contains('Quota exceeded: 20 per day'));
   });
 }

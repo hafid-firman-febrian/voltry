@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:firebase_ai/firebase_ai.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/app_exception.dart';
@@ -85,25 +85,29 @@ class GeminiFoodAnalyzer implements FoodAnalyzer {
         Content.multi([TextPart(prompt), InlineDataPart(mimeType, bytes)]),
       ]).timeout(timeout);
       return parseAnalysis(text);
-    } on AppException {
-      rethrow;
-    } on TimeoutException {
-      throw const NetworkException('Gemini did not answer within 30 seconds');
-    } on IOException catch (error) {
-      // package:http wraps socket errors in a ClientException that also
-      // implements SocketException, so this catches offline and DNS errors.
-      throw NetworkException(error.toString());
-    } on FirebaseAIException catch (error) {
-      throw AiException(error.message);
-    } on Exception catch (error) {
-      throw AiException(error.toString());
     } catch (error) {
-      // firebase_ai casts the response body with `as`, so a malformed reply
-      // arrives as a TypeError. Without this the Analyze page would spin
-      // forever instead of offering Try again.
-      throw AiException(error.toString());
+      final failure = _toAppException(error);
+      // The UI only shows a friendly sentence, so keep the real cause (server
+      // message, quota, overload) visible in the `flutter run` console.
+      if (kDebugMode) debugPrint('GeminiFoodAnalyzer failed: $error');
+      throw failure;
     }
   }
+
+  AppException _toAppException(Object error) => switch (error) {
+    AppException() => error,
+    TimeoutException() => const NetworkException(
+      'Gemini did not answer within 30 seconds',
+    ),
+    // package:http wraps socket errors in a ClientException that also
+    // implements SocketException, so this catches offline and DNS errors.
+    IOException() => NetworkException(error.toString()),
+    FirebaseAIException(:final message) => AiException(message),
+    // firebase_ai casts the response body with `as`, so a malformed reply
+    // arrives as a TypeError. Mapping it keeps the Analyze page from spinning
+    // forever instead of offering Try again.
+    _ => AiException(error.toString()),
+  };
 
   Future<String?> _generateWithModel(List<Content> prompt) async =>
       (await _model.generateContent(prompt)).text;
