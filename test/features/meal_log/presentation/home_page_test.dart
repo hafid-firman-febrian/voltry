@@ -74,12 +74,12 @@ void main() {
     expect(find.text('of 2,000 kcal'), findsOneWidget);
   });
 
-  testWidgets('shows an error with Retry when meals cannot load', (
-    tester,
-  ) async {
+  testWidgets('shows the load error with Retry right away', (tester) async {
     final repository = FakeMealLogRepository([lunch])
       ..failWith = const StorageException('corrupt');
-    await pumpVoltryApp(tester, repository: repository);
+    await pumpVoltryApp(tester, repository: repository, settle: false);
+    // Riverpod's default retry would keep a spinner up for ~45 s of backoff.
+    await tester.pump(const Duration(milliseconds: 100));
 
     expect(
       find.text("Couldn't access your data on this device. Please try again."),

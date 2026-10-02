@@ -9,6 +9,10 @@ import '../../domain/meal_log_model.dart';
 final mealLogsControllerProvider =
     AsyncNotifierProvider<MealLogsController, List<MealLog>>(
       MealLogsController.new,
+      // A local database that fails once keeps failing, so Riverpod's default
+      // backoff would only hide the error behind a spinner for ~45 s. Show the
+      // error view with Retry right away instead.
+      retry: (_, _) => null,
     );
 
 /// Every saved meal, newest first. Home and History derive their views from

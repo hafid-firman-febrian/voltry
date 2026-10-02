@@ -20,7 +20,7 @@ import '../fakes/fake_photo_storage.dart';
 final testNow = DateTime(2026, 10, 1, 20);
 
 /// Pumps the whole app, router included, on top of fakes, on an iPhone-sized
-/// screen (390 x 844), and waits until the first page has loaded.
+/// screen (390 x 844). With [settle], waits until the first page has loaded.
 Future<void> pumpVoltryApp(
   WidgetTester tester, {
   FakeMealLogRepository? repository,
@@ -28,6 +28,7 @@ Future<void> pumpVoltryApp(
   FakeFoodAnalyzer? analyzer,
   FakePhotoPicker? picker,
   int? storedTarget,
+  bool settle = true,
 }) async {
   tester.view
     ..physicalSize = const Size(1170, 2532)
@@ -51,11 +52,7 @@ Future<void> pumpVoltryApp(
   ];
 
   await tester.pumpWidget(
-    ProviderScope(
-      overrides: overrides,
-      retry: (_, _) => null,
-      child: const VoltryApp(),
-    ),
+    ProviderScope(overrides: overrides, child: const VoltryApp()),
   );
-  await tester.pumpAndSettle();
+  if (settle) await tester.pumpAndSettle();
 }
