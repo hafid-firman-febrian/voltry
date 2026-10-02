@@ -6,7 +6,7 @@ Voltry adalah app Flutter untuk menganalisis makanan dari foto. User memotret ma
 
 Ini **proyek portofolio untuk Upwork**. Hasil akhirnya repo GitHub, README, dan video demo. App hanya dijalankan oleh owner (tidak ada rilis ke store atau APK publik). Prinsip scope: **kecil dan cepat selesai, dengan satu alur utama yang rapi**. Bahasa UI: Inggris. Satuan: metrik. Light mode saja.
 
-Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D21 di sana menjelaskan alasan tiap keputusan.
+Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D23 di sana menjelaskan alasan tiap keputusan.
 
 `../arsip-voltry` berisi Voltry versi lama (AI fitness coach, Supabase + Claude) yang sudah ditinggalkan. **Spec, plan, dan aturannya tidak berlaku di sini.** Dari arsip itu, yang dipakai hanya design system Candy Sport.
 
@@ -269,7 +269,7 @@ Visual **Candy Sport**. Referensinya ada di `docs/design/visual-direction.png`. 
   - muted `#9A8F86`
   - line `#EADFD6`
   - danger `#E5484D`
-- **Teks di atas warna:** putih di atas coral dan blue, `ink` di atas yellow, `#10302D` di atas teal.
+- **Teks di atas warna:** putih di atas coral dan blue, `ink` di atas yellow, `#10302D` di atas teal. Label kecil putih di atas coral/blue diizinkan, mengikuti mockup (spec D22).
 - **Pemetaan warna:**
   - Tab aktif navbar: Home coral, History blue.
   - Makro: Protein blue, Carbs yellow, Fat teal.
