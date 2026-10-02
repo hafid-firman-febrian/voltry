@@ -6,7 +6,7 @@ Voltry adalah app Flutter untuk menganalisis makanan dari foto. User memotret ma
 
 Ini **proyek portofolio untuk Upwork**. Hasil akhirnya repo GitHub, README, dan video demo. App hanya dijalankan oleh owner (tidak ada rilis ke store atau APK publik). Prinsip scope: **kecil dan cepat selesai, dengan satu alur utama yang rapi**. Bahasa UI: Inggris. Satuan: metrik. Light mode saja.
 
-Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D25 di sana menjelaskan alasan tiap keputusan.
+Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D26 di sana menjelaskan alasan tiap keputusan.
 
 `../arsip-voltry` berisi Voltry versi lama (AI fitness coach, Supabase + Claude) yang sudah ditinggalkan. **Spec, plan, dan aturannya tidak berlaku di sini.** Dari arsip itu, yang dipakai hanya design system Candy Sport.
 
@@ -271,10 +271,10 @@ Visual **Candy Sport**. Referensinya ada di `docs/design/visual-direction.png`. 
   - danger `#E5484D`
 - **Teks di atas warna:** putih di atas coral dan blue, `ink` di atas yellow, `#10302D` di atas teal. Label kecil putih di atas coral/blue diizinkan, mengikuti mockup (spec D22).
 - **Pemetaan warna:**
-  - Tab aktif navbar: Home coral, History blue.
+  - Tab aktif navbar: Home coral, History blue. Tombol kamera di tengah: ink.
   - Makro: Protein blue, Carbs yellow, Fat teal.
   - `CalorieRing`: yellow di atas `HeroCard` coral.
-- **Navbar (`VoltryNavBar`):** mengambang, blur (`BackdropFilter`), dan hanya berisi ikon. Tab aktif berupa lingkaran 52px yang sedikit keluar dari bar.
+- **Navbar (`VoltryNavBar`):** mengambang, blur (`BackdropFilter`), dan hanya berisi ikon. Tab aktif berupa lingkaran 52px yang sedikit keluar dari bar. Di tengah ada tombol kamera: lingkaran ink 64px dengan ikon putih, menonjol sekitar 22px di atas bar. Ini satu-satunya tombol kamera di app (spec D26).
 - **Font:** Urbanist, disertakan sebagai asset (tanpa `google_fonts`). Skala tipografi ada di spec §10.2.
 - **Radius:** 24 untuk kartu besar, 20 untuk kartu, 18 untuk baris list, pill untuk chip dan tombol.
 - **Ikon petir** menandai semua yang dibuat AI.

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/analysis/presentation/snap_meal_flow.dart';
 import '../theme/theme_context.dart';
 import '../widgets/voltry_nav_bar.dart';
 
-/// Hosts the Home and History tabs under the floating nav bar.
-class AppShell extends StatelessWidget {
+/// Hosts the Home and History tabs under the floating nav bar, with the
+/// camera between them so a meal can be snapped from either tab.
+class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.shell});
 
   final StatefulNavigationShell shell;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
 
     return Scaffold(
@@ -22,6 +25,11 @@ class AppShell extends StatelessWidget {
         // Tapping the active tab again returns it to its first page.
         onSelected: (index) =>
             shell.goBranch(index, initialLocation: index == shell.currentIndex),
+        centerAction: VoltryNavAction(
+          icon: Icons.photo_camera_rounded,
+          tooltip: 'Snap a meal',
+          onPressed: () => snapMeal(context, ref),
+        ),
         items: [
           VoltryNavItem(
             icon: Icons.home_rounded,

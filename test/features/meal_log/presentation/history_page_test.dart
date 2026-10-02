@@ -47,7 +47,7 @@ void main() {
     await openHistory(tester);
 
     expect(
-      find.text('No meals yet. Snap your first meal from Home.'),
+      find.text('No meals yet. Tap the camera to snap your first one.'),
       findsOneWidget,
     );
   });

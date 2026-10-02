@@ -15,7 +15,6 @@ import '../../../../core/widgets/hero_card.dart';
 import '../../../../core/widgets/pill_badge.dart';
 import '../../../../core/widgets/stat_tile.dart';
 import '../../../../core/widgets/voltry_nav_bar.dart';
-import '../../../analysis/presentation/snap_meal_flow.dart';
 import '../../../calorie_target/domain/calorie_target_rules.dart';
 import '../../../calorie_target/presentation/controllers/calorie_target_controller.dart';
 import '../../../calorie_target/presentation/widgets/calorie_target_dialog.dart';
@@ -84,7 +83,6 @@ class _HomeContent extends ConsumerWidget {
           consumed: summary.calories,
           target: target,
           onEditTarget: () => editCalorieTarget(context, ref),
-          onSnap: () => snapMeal(context, ref),
         ),
         const SizedBox(height: 12),
         Row(
@@ -148,13 +146,11 @@ class _CalorieHero extends StatelessWidget {
     required this.consumed,
     required this.target,
     required this.onEditTarget,
-    required this.onSnap,
   });
 
   final int consumed;
   final int target;
   final VoidCallback onEditTarget;
-  final VoidCallback onSnap;
 
   @override
   Widget build(BuildContext context) {
@@ -207,15 +203,9 @@ class _CalorieHero extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'Snap a meal to log it',
+                  'Daily target · ${formatNumber(target)} kcal',
                   style: text.bodySmall.copyWith(color: soft),
                 ),
-              ),
-              CircleIconButton(
-                icon: Icons.photo_camera_rounded,
-                tooltip: 'Snap a meal',
-                onPressed: onSnap,
-                size: 56,
               ),
             ],
           ),

@@ -112,4 +112,53 @@ void main() {
     final activeIcon = tester.widget<Icon>(find.byIcon(Icons.home_rounded));
     expect(activeIcon.color, VoltryColors.light.onCoral);
   });
+
+  testWidgets('VoltryNavBar raises a center action between the tabs', (
+    tester,
+  ) async {
+    var snaps = 0;
+    int? selected;
+    await pumpThemed(
+      tester,
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: VoltryNavBar(
+          currentIndex: 0,
+          onSelected: (index) => selected = index,
+          centerAction: VoltryNavAction(
+            icon: Icons.photo_camera_rounded,
+            tooltip: 'Snap a meal',
+            onPressed: () => snaps++,
+          ),
+          items: const [
+            VoltryNavItem(
+              icon: Icons.home_rounded,
+              label: 'Home',
+              color: Color(0xFFFF5A5F),
+              onColor: Color(0xFFFFFFFF),
+            ),
+            VoltryNavItem(
+              icon: Icons.history_rounded,
+              label: 'History',
+              color: Color(0xFF3A86FF),
+              onColor: Color(0xFFFFFFFF),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    await tester.tap(find.byTooltip('Snap a meal'));
+    await tester.tap(find.byIcon(Icons.history_rounded));
+    expect(snaps, 1);
+    expect(selected, 1);
+
+    final action = tester.getRect(find.byIcon(Icons.photo_camera_rounded));
+    final home = tester.getRect(find.byIcon(Icons.home_rounded));
+    final history = tester.getRect(find.byIcon(Icons.history_rounded));
+    expect(action.center.dx, greaterThan(home.center.dx));
+    expect(action.center.dx, lessThan(history.center.dx));
+    // Floats higher than even the raised active tab.
+    expect(action.center.dy, lessThan(home.center.dy));
+  });
 }

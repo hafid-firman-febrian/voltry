@@ -43,7 +43,7 @@ class HistoryPage extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 48),
                   child: Text(
-                    'No meals yet. Snap your first meal from Home.',
+                    'No meals yet. Tap the camera to snap your first one.',
                     textAlign: TextAlign.center,
                     style: text.body.copyWith(color: context.colors.muted),
                   ),

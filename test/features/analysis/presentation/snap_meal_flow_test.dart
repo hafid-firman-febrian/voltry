@@ -60,4 +60,17 @@ void main() {
 
     expect(await FakePhotoPicker(photo: photo).pick(PhotoSource.camera), photo);
   });
+
+  testWidgets('the camera in the navbar also works from the History tab', (
+    tester,
+  ) async {
+    await pumpVoltryApp(tester);
+    await tester.tap(find.bySemanticsLabel('History'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Snap a meal'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Take photo'), findsOneWidget);
+  });
 }

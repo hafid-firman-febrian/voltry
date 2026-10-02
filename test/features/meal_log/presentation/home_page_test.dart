@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voltry/core/errors/app_exception.dart';
+import 'package:voltry/core/widgets/hero_card.dart';
 
 import '../../../fakes/fake_meal_log_repository.dart';
 import '../../../fixtures/meal_log_fixtures.dart';
@@ -159,5 +160,20 @@ void main() {
       expect(find.text('Fri, 2 Oct'), findsOneWidget);
       expect(find.text('Snap your first meal of the day.'), findsOneWidget);
     });
+  });
+
+  testWidgets('the hero card shows the daily target and no camera button', (
+    tester,
+  ) async {
+    await pumpVoltryApp(tester, storedTarget: 1800);
+
+    expect(find.text('Daily target · 1,800 kcal'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(HeroCard),
+        matching: find.byIcon(Icons.photo_camera_rounded),
+      ),
+      findsNothing,
+    );
   });
 }
