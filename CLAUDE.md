@@ -6,7 +6,7 @@ Voltry adalah app Flutter untuk menganalisis makanan dari foto. User memotret ma
 
 Ini **proyek portofolio untuk Upwork**. Hasil akhirnya repo GitHub, README, dan video demo. App hanya dijalankan oleh owner (tidak ada rilis ke store atau APK publik). Prinsip scope: **kecil dan cepat selesai, dengan satu alur utama yang rapi**. Bahasa UI: Inggris. Satuan: metrik. Light mode saja.
 
-Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D15 di sana menjelaskan alasan tiap keputusan.
+Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D19 di sana menjelaskan alasan tiap keputusan.
 
 `../arsip-voltry` berisi Voltry versi lama (AI fitness coach, Supabase + Claude) yang sudah ditinggalkan. **Spec, plan, dan aturannya tidak berlaku di sini.** Dari arsip itu, yang dipakai hanya design system Candy Sport.
 
@@ -19,8 +19,8 @@ Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesa
 - **Tahap aktif:** Tahap 1, analyzer lokal
 - **Branch:** `feat/food-analyzer`
 - **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (disetujui owner 2026-10-01)
-- **Plan:** `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (16 task, menunggu review owner)
-- **Langkah berikutnya:** owner mereview plan dan memilih cara eksekusi → kerjakan mulai Task 1
+- **Plan:** `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (16 task, disetujui owner 2026-10-02, dieksekusi inline/Native)
+- **Langkah berikutnya:** kerjakan task pertama yang belum dicentang di plan
 
 ---
 
