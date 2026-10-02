@@ -26,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Voltry uses the camera to photograph your meals for nutrition estimates.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Voltry reads the meal photos you pick to estimate their nutrition.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
