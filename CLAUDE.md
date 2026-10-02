@@ -26,7 +26,7 @@ Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesa
 
 ## Melanjutkan Pekerjaan Antar Sesi
 
-Pekerjaan dikerjakan bertahap dalam banyak sesi. Satu-satunya sumber progres per task adalah **checkbox di file plan**. Repo harus selalu dalam keadaan yang cocok dengan checkbox itu.
+Pekerjaan dikerjakan bertahap dalam banyak sesi. Satu-satunya sumber progres per task adalah **checkbox di file plan**. Repo harus selalu dalam keadaan yang cocok dengan checkbox itu. File plan dan spec hanya ada di laptop owner (`docs/superpowers/` di-gitignore), jadi cocokkan juga checkbox dengan `git log`.
 
 ### Di awal sesi
 
@@ -39,8 +39,8 @@ Pekerjaan dikerjakan bertahap dalam banyak sesi. Satu-satunya sumber progres per
 ### Saat satu task selesai
 
 1. `flutter analyze` bersih dan `flutter test` hijau.
-2. Centang task itu di plan (`- [x]`).
-3. Commit kode dan perubahan plan **dalam satu commit**.
+2. Centang task itu di plan (`- [x]`). Perubahan ini hanya lokal dan tidak ikut di-commit.
+3. Commit kodenya.
 
 ### Kalau sesi harus berhenti di tengah task
 
@@ -84,7 +84,7 @@ Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutn
   - `providers/`: `databaseProvider`, `sharedPreferencesProvider`
 - `lib/features/<feature>/` punya struktur `domain/`, `data/`, dan `presentation/{controllers,states,pages,widgets}`. Feature yang ada: `analysis`, `meal_log`, `calorie_target`.
 - `test/` mengikuti struktur `lib/`. Versi palsu untuk test ada di `test/fakes/`.
-- `docs/superpowers/specs/` dan `docs/superpowers/plans/`: spec dan plan per tahap.
+- `docs/superpowers/specs/` dan `docs/superpowers/plans/`: spec dan plan per tahap. **Hanya lokal**: di-gitignore dan tidak pernah di-commit.
 - `docs/design/`: referensi visual Candy Sport.
 - `docs/setup/`: langkah setup Firebase.
 
@@ -126,6 +126,7 @@ Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutn
 - Conventional commits: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`. Tipe `wip:` hanya untuk berhenti di tengah task.
 - **Jangan tambahkan `Co-Authored-By` atau atribusi Claude apa pun** di pesan commit maupun deskripsi PR. Aturan ini juga berlaku untuk commit yang dibuat subagent saat mengerjakan plan, jadi tulis larangan ini di setiap prompt subagent. Setelah commit, cek dengan `git log -1 --format=%B`. Kalau trailer atribusi ikut masuk, perbaiki dengan `git commit --amend`.
 - Jangan push atau membuat PR tanpa diminta.
+- Jangan commit spec atau plan (`docs/superpowers/`). Folder itu di-gitignore atas permintaan owner, karena repo-nya publik.
 - Sebelum commit, cek `git status`. Pastikan file konfigurasi Firebase tidak ikut ter-stage.
 
 ---
