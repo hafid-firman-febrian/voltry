@@ -23,10 +23,12 @@ typedef GenerateText = Future<String?> Function(List<Content> prompt);
 class GeminiFoodAnalyzer implements FoodAnalyzer {
   GeminiFoodAnalyzer({this.generate, this.timeout = defaultTimeout});
 
-  // Newest stable Flash model on the free Gemini Developer API as of
-  // 2026-10-01. Check https://firebase.google.com/docs/ai-logic/models before
-  // changing: Google retires older models and closes them to new projects.
-  static const modelName = 'gemini-3.8-flash';
+  // 3.7 Flash rather than the newer 3.8: on the free tier every model has its
+  // own daily quota, and during device testing (2026-10-02) 3.8 Flash used up
+  // its 20 requests and was often overloaded. Check
+  // https://firebase.google.com/docs/ai-logic/models before changing: Google
+  // retires older models and closes them to new projects.
+  static const modelName = 'gemini-3.7-flash';
   static const defaultTimeout = Duration(seconds: 30);
 
   static const prompt =
