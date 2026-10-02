@@ -14,15 +14,20 @@ final foodAnalyzerProvider = Provider<FoodAnalyzer>(
   (ref) => GeminiFoodAnalyzer(),
 );
 
+/// Sends the prompt to Gemini and returns the reply text.
+typedef GenerateText = Future<String?> Function(List<Content> prompt);
+
 /// Thin adapter around Firebase AI Logic. All validation lives in
-/// [parseAnalysis], so this class is checked by hand on a device rather than
-/// unit tested.
+/// [parseAnalysis]. Tests pass [generate] to check the error mapping without
+/// Firebase; the real Gemini call is checked by hand on a device.
 class GeminiFoodAnalyzer implements FoodAnalyzer {
+  GeminiFoodAnalyzer({this.generate, this.timeout = defaultTimeout});
+
   // Newest stable Flash model on the free Gemini Developer API as of
   // 2026-10-01. Check https://firebase.google.com/docs/ai-logic/models before
   // changing: Google retires older models and closes them to new projects.
   static const modelName = 'gemini-3.8-flash';
-  static const timeout = Duration(seconds: 30);
+  static const defaultTimeout = Duration(seconds: 30);
 
   static const prompt =
       'You are a nutrition estimator. Look at the photo and estimate the '
@@ -55,6 +60,10 @@ class GeminiFoodAnalyzer implements FoodAnalyzer {
     ],
   );
 
+  /// Replaces the real Gemini call in tests.
+  final GenerateText? generate;
+  final Duration timeout;
+
   // Created on first use, because FirebaseAI.googleAI() needs the Firebase
   // app that main() initializes.
   late final GenerativeModel _model = FirebaseAI.googleAI().generativeModel(
@@ -70,13 +79,12 @@ class GeminiFoodAnalyzer implements FoodAnalyzer {
     required Uint8List bytes,
     required String mimeType,
   }) async {
+    final send = generate ?? _generateWithModel;
     try {
-      final response = await _model
-          .generateContent([
-            Content.multi([TextPart(prompt), InlineDataPart(mimeType, bytes)]),
-          ])
-          .timeout(timeout);
-      return parseAnalysis(response.text);
+      final text = await send([
+        Content.multi([TextPart(prompt), InlineDataPart(mimeType, bytes)]),
+      ]).timeout(timeout);
+      return parseAnalysis(text);
     } on AppException {
       rethrow;
     } on TimeoutException {
@@ -89,6 +97,14 @@ class GeminiFoodAnalyzer implements FoodAnalyzer {
       throw AiException(error.message);
     } on Exception catch (error) {
       throw AiException(error.toString());
+    } catch (error) {
+      // firebase_ai casts the response body with `as`, so a malformed reply
+      // arrives as a TypeError. Without this the Analyze page would spin
+      // forever instead of offering Try again.
+      throw AiException(error.toString());
     }
   }
+
+  Future<String?> _generateWithModel(List<Content> prompt) async =>
+      (await _model.generateContent(prompt)).text;
 }
