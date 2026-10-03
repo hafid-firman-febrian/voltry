@@ -6,7 +6,7 @@ Voltry adalah app Flutter untuk menganalisis makanan dari foto. User memotret ma
 
 Ini **proyek portofolio untuk Upwork**. Hasil akhirnya repo GitHub, README, dan video demo. App hanya dijalankan oleh owner (tidak ada rilis ke store atau APK publik). Prinsip scope: **kecil dan cepat selesai, dengan satu alur utama yang rapi**. Bahasa UI: Inggris. Satuan: metrik. Light mode saja.
 
-Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D28 di sana menjelaskan alasan tiap keputusan.
+Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D29 di sana menjelaskan alasan tiap keputusan.
 
 `../arsip-voltry` berisi Voltry versi lama (AI fitness coach, Supabase + Claude) yang sudah ditinggalkan. **Spec, plan, dan aturannya tidak berlaku di sini.** Dari arsip itu, yang dipakai hanya design system Candy Sport.
 
@@ -18,7 +18,7 @@ Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesa
 
 - **Tahap aktif:** Tahap 1 selesai pada 2026-10-03. Kode tambahan D28 (pemilih model AI) selesai pada 2026-10-03, tinggal cek di device oleh owner
 - **Branch:** `feat/model-picker`, menunggu cek di device dan keputusan owner untuk merge ke `main`
-- **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (lokal, decision log D1–D28)
+- **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (lokal, decision log D1–D29)
 - **Plan:** `docs/superpowers/plans/2026-10-03-voltry-model-picker.md` (lokal, semua task selesai kecuali Task 5 Step 2: cek di device). Plan Tahap 1: `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (semua task selesai)
 - **Langkah berikutnya:** owner menjalankan cek di device (plan Task 5 Step 2), merge `feat/model-picker` ke `main` setelah owner setuju, lalu brainstorming Tahap 2 (login + sinkron cloud, pertanyaan terbuka di spec §12)
 
