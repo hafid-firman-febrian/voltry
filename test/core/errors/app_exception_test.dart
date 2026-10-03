@@ -35,10 +35,11 @@ void main() {
     );
   });
 
-  test('a used-up AI quota gets its own message', () {
+  test('a used-up AI quota suggests switching models', () {
     expect(
       errorMessage(const AiQuotaException('429 quota exceeded')),
-      "You've reached today's AI limit. Please try again later.",
+      'This AI model has reached its free limit. '
+      'Switch models or try again later.',
     );
   });
 }

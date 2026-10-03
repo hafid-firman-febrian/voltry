@@ -45,7 +45,8 @@ String errorMessage(Object error) => switch (error) {
     "You're offline or the connection is slow. Check it and try again.",
   AiException() => "Couldn't analyze this photo. Please try again.",
   AiQuotaException() =>
-    "You've reached today's AI limit. Please try again later.",
+    'This AI model has reached its free limit. '
+        'Switch models or try again later.',
   StorageException() =>
     "Couldn't access your data on this device. Please try again.",
   PhotoAccessException() =>

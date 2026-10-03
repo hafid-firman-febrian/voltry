@@ -15,6 +15,7 @@ import '../../../../core/widgets/show_message.dart';
 import '../controllers/analyze_controller.dart';
 import '../snap_meal_flow.dart';
 import '../states/analyze_state.dart';
+import '../widgets/ai_model_sheet.dart';
 import '../widgets/nutrition_card.dart';
 
 class AnalyzePage extends ConsumerWidget {
@@ -85,10 +86,21 @@ class AnalyzePage extends ConsumerWidget {
                     message: errorMessage(error),
                   ),
                   const SizedBox(height: 16),
-                  PrimaryButton(
-                    label: 'Try again',
-                    onPressed: () => ref.read(provider.notifier).retry(),
-                  ),
+                  if (error is AiQuotaException) ...[
+                    PrimaryButton(
+                      label: 'Switch AI model',
+                      onPressed: () => _switchModel(context, ref),
+                    ),
+                    const SizedBox(height: 12),
+                    SecondaryButton(
+                      label: 'Try again',
+                      onPressed: () => ref.read(provider.notifier).retry(),
+                    ),
+                  ] else
+                    PrimaryButton(
+                      label: 'Try again',
+                      onPressed: () => ref.read(provider.notifier).retry(),
+                    ),
                   const SizedBox(height: 12),
                   SecondaryButton(label: 'Retake', onPressed: retake),
                 ],
@@ -98,6 +110,15 @@ class AnalyzePage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  // Every model has its own free quota, so the same photo is worth sending
+  // again only when the user actually picked a different model.
+  Future<void> _switchModel(BuildContext context, WidgetRef ref) async {
+    final switched = await showAiModelSheet(context, ref);
+    if (switched && context.mounted) {
+      await ref.read(analyzeControllerProvider(photo).notifier).retry();
+    }
   }
 
   Future<void> _save(BuildContext context, WidgetRef ref) async {

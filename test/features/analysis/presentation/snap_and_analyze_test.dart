@@ -111,6 +111,7 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(find.text('Switch AI model'), findsNothing);
 
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();
@@ -156,21 +157,53 @@ void main() {
     expect(repository.logs, isEmpty);
   });
 
-  testWidgets('a used-up AI quota says so instead of a generic error', (
+  testWidgets('a used-up AI quota offers another model and analyzes again', (
     tester,
   ) async {
-    await start(
-      tester,
-      FakeFoodAnalyzer([const AiQuotaException('429 quota exceeded')]),
-    );
+    final analyzer = FakeFoodAnalyzer([
+      const AiQuotaException('429 quota exceeded'),
+      const FoodFound(nasiGoreng),
+    ]);
+    await start(tester, analyzer);
 
     await snapWithCamera(tester);
     await tester.pumpAndSettle();
-
     expect(
-      find.text("You've reached today's AI limit. Please try again later."),
+      find.text(
+        'This AI model has reached its free limit. '
+        'Switch models or try again later.',
+      ),
       findsOneWidget,
     );
     expect(find.text('Try again'), findsOneWidget);
+    expect(find.text('Retake'), findsOneWidget);
+
+    await tester.tap(find.text('Switch AI model'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Gemini 3.8 Flash'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('AI ESTIMATE'), findsOneWidget);
+    expect(find.text('Nasi goreng'), findsOneWidget);
+    expect(analyzer.requests, hasLength(2));
+  });
+
+  testWidgets('keeping the same model on the quota error sends nothing', (
+    tester,
+  ) async {
+    final analyzer = FakeFoodAnalyzer([
+      const AiQuotaException('429 quota exceeded'),
+    ]);
+    await start(tester, analyzer);
+    await snapWithCamera(tester);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Switch AI model'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Gemini 3.7 Flash'));
+    await tester.pumpAndSettle();
+
+    expect(analyzer.requests, hasLength(1));
+    expect(find.text('Switch AI model'), findsOneWidget);
   });
 }
