@@ -7,11 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/app_exception.dart';
 import '../domain/analysis_result.dart';
+import '../presentation/controllers/ai_model_controller.dart';
 import 'analysis_parser.dart';
 import 'food_analyzer.dart';
 
+// Watching the choice builds a new analyzer, and with it a new
+// GenerativeModel, as soon as the user switches models.
 final foodAnalyzerProvider = Provider<FoodAnalyzer>(
-  (ref) => GeminiFoodAnalyzer(),
+  (ref) =>
+      GeminiFoodAnalyzer(modelName: ref.watch(aiModelControllerProvider).id),
 );
 
 /// Sends the prompt to Gemini and returns the reply text.
@@ -21,14 +25,12 @@ typedef GenerateText = Future<String?> Function(List<Content> prompt);
 /// [parseAnalysis]. Tests pass [generate] to check the error mapping without
 /// Firebase; the real Gemini call is checked by hand on a device.
 class GeminiFoodAnalyzer implements FoodAnalyzer {
-  GeminiFoodAnalyzer({this.generate, this.timeout = defaultTimeout});
+  GeminiFoodAnalyzer({
+    required this.modelName,
+    this.generate,
+    this.timeout = defaultTimeout,
+  });
 
-  // 3.7 Flash rather than the newer 3.8: on the free tier every model has its
-  // own daily quota, and during device testing (2026-10-02) 3.8 Flash used up
-  // its 20 requests and was often overloaded. Check
-  // https://firebase.google.com/docs/ai-logic/models before changing: Google
-  // retires older models and closes them to new projects.
-  static const modelName = 'gemini-3.7-flash';
   static const defaultTimeout = Duration(seconds: 30);
 
   static const prompt =
@@ -62,6 +64,8 @@ class GeminiFoodAnalyzer implements FoodAnalyzer {
     ],
   );
 
+  final String modelName;
+
   /// Replaces the real Gemini call in tests.
   final GenerateText? generate;
   final Duration timeout;
@@ -91,7 +95,9 @@ class GeminiFoodAnalyzer implements FoodAnalyzer {
       final failure = _toAppException(error);
       // The UI only shows a friendly sentence, so keep the real cause (server
       // message, quota, overload) visible in the `flutter run` console.
-      if (kDebugMode) debugPrint('GeminiFoodAnalyzer failed: $error');
+      if (kDebugMode) {
+        debugPrint('GeminiFoodAnalyzer ($modelName) failed: $error');
+      }
       throw failure;
     }
   }

@@ -10,11 +10,13 @@ import 'package:voltry/features/analysis/domain/analysis_result.dart';
 
 void main() {
   final photo = Uint8List.fromList([1, 2, 3]);
+  const model = 'gemini-3.7-flash';
 
   Future<AnalysisResult> analyzeWith(
     Future<String?> Function() reply, {
     Duration timeout = GeminiFoodAnalyzer.defaultTimeout,
   }) => GeminiFoodAnalyzer(
+    modelName: model,
     generate: (_) => reply(),
     timeout: timeout,
   ).analyze(bytes: photo, mimeType: 'image/jpeg');
@@ -22,6 +24,7 @@ void main() {
   test('sends the prompt with the photo and parses the reply', () async {
     List<Content>? sent;
     final analyzer = GeminiFoodAnalyzer(
+      modelName: model,
       generate: (prompt) async {
         sent = prompt;
         return '{"is_food": false, "food_name": "", "calories": 0,'
@@ -71,7 +74,7 @@ void main() {
     );
   });
 
-  test('prints the original cause to the console while debugging', () async {
+  test('prints the model and the original cause while debugging', () async {
     final logs = <String>[];
     final original = debugPrint;
     debugPrint = (message, {wrapWidth}) => logs.add(message ?? '');
@@ -86,6 +89,7 @@ void main() {
 
     expect(logs, hasLength(1));
     expect(logs.single, contains('Quota exceeded: 20 per day'));
+    expect(logs.single, contains(model));
   });
 
   test('a used-up quota becomes AiQuotaException', () {
