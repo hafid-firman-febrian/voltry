@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voltry/app.dart';
 import 'package:voltry/core/providers/core_providers.dart';
+import 'package:voltry/features/analysis/data/ai_model_repository.dart';
 import 'package:voltry/features/analysis/data/gemini_food_analyzer.dart';
 import 'package:voltry/features/analysis/data/photo_picker.dart';
 import 'package:voltry/features/calorie_target/data/calorie_target_repository.dart';
@@ -28,6 +29,7 @@ Future<void> pumpVoltryApp(
   FakeFoodAnalyzer? analyzer,
   FakePhotoPicker? picker,
   int? storedTarget,
+  String? storedModelId,
   DateTime Function()? clock,
   bool settle = true,
 }) async {
@@ -38,6 +40,7 @@ Future<void> pumpVoltryApp(
 
   SharedPreferences.setMockInitialValues({
     CalorieTargetRepository.key: ?storedTarget,
+    AiModelRepository.key: ?storedModelId,
   });
   final preferences = await SharedPreferences.getInstance();
   final overrides = <Override>[

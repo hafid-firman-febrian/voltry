@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voltry/core/errors/app_exception.dart';
 import 'package:voltry/core/widgets/hero_card.dart';
+import 'package:voltry/features/analysis/data/ai_model_repository.dart';
 
 import '../../../fakes/fake_meal_log_repository.dart';
 import '../../../fixtures/meal_log_fixtures.dart';
@@ -175,5 +177,28 @@ void main() {
       ),
       findsNothing,
     );
+  });
+
+  testWidgets('the AI model button switches models and remembers the pick', (
+    tester,
+  ) async {
+    await pumpVoltryApp(tester, storedModelId: 'gemini-3.6-flash');
+
+    await tester.tap(find.byTooltip('AI model'));
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(
+        of: find.widgetWithText(ListTile, 'Gemini 3.6 Flash'),
+        matching: find.byIcon(Icons.check_rounded),
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Gemini 3.8 Flash'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Now using Gemini 3.8 Flash'), findsOneWidget);
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getString(AiModelRepository.key), 'gemini-3.8-flash');
   });
 }
