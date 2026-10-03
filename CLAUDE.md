@@ -17,10 +17,10 @@ Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-desi
 Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesai ditulis, atau satu tahap selesai. Progres per task **tidak** dicatat di sini, tapi di checkbox plan.
 
 - **Tahap aktif:** Tahap 1 selesai pada 2026-10-03
-- **Branch:** `feat/food-analyzer`, siap di-PR ke `main` (tunggu instruksi owner)
+- **Branch:** `feat/food-analyzer` sudah di-merge ke `main` (2026-10-03) dan dihapus. Tahap 2 dimulai di branch baru
 - **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (lokal, decision log D1–D27)
 - **Plan:** `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (lokal, semua task selesai)
-- **Langkah berikutnya:** owner memutuskan PR ke `main`, lalu brainstorming Tahap 2 (login + sinkron cloud, pertanyaan terbuka di spec §12)
+- **Langkah berikutnya:** brainstorming Tahap 2 (login + sinkron cloud, pertanyaan terbuka di spec §12)
 
 ---
 
