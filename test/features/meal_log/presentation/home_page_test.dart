@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voltry/core/errors/app_exception.dart';
 import 'package:voltry/core/widgets/hero_card.dart';
 import 'package:voltry/features/analysis/data/ai_model_repository.dart';
+import 'package:voltry/features/analysis/presentation/widgets/ai_model_sheet.dart';
+import 'package:voltry/features/meal_log/presentation/pages/history_page.dart';
 
 import '../../../fakes/fake_meal_log_repository.dart';
 import '../../../fixtures/meal_log_fixtures.dart';
@@ -200,5 +202,19 @@ void main() {
     expect(find.text('Now using Gemini 3.8 Flash'), findsOneWidget);
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getString(AiModelRepository.key), 'gemini-3.8-flash');
+  });
+
+  testWidgets('the AI model sheet covers the navbar like the photo sheet', (
+    tester,
+  ) async {
+    await pumpVoltryApp(tester);
+    await tester.tap(find.byTooltip('AI model'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.bySemanticsLabel('History'), warnIfMissed: false);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AiModelSheet), findsNothing);
+    expect(find.byType(HistoryPage), findsNothing);
   });
 }

@@ -13,6 +13,10 @@ Future<bool> showAiModelSheet(BuildContext context, WidgetRef ref) async {
   final current = ref.read(aiModelControllerProvider);
   final picked = await showModalBottomSheet<AiModel>(
     context: context,
+    // Home lives inside a tab navigator under the floating navbar. The root
+    // navigator puts the sheet and its barrier above the navbar, like the
+    // photo source sheet.
+    useRootNavigator: true,
     builder: (_) => AiModelSheet(selected: current),
   );
   if (picked == null || picked == current || !context.mounted) return false;
