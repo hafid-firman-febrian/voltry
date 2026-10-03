@@ -6,7 +6,7 @@ Voltry adalah app Flutter untuk menganalisis makanan dari foto. User memotret ma
 
 Ini **proyek portofolio untuk Upwork**. Hasil akhirnya repo GitHub, README, dan video demo. App hanya dijalankan oleh owner (tidak ada rilis ke store atau APK publik). Prinsip scope: **kecil dan cepat selesai, dengan satu alur utama yang rapi**. Bahasa UI: Inggris. Satuan: metrik. Light mode saja.
 
-Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D27 di sana menjelaskan alasan tiap keputusan.
+Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D28 di sana menjelaskan alasan tiap keputusan.
 
 `../arsip-voltry` berisi Voltry versi lama (AI fitness coach, Supabase + Claude) yang sudah ditinggalkan. **Spec, plan, dan aturannya tidak berlaku di sini.** Dari arsip itu, yang dipakai hanya design system Candy Sport.
 
@@ -16,11 +16,11 @@ Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-desi
 
 Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesai ditulis, atau satu tahap selesai. Progres per task **tidak** dicatat di sini, tapi di checkbox plan.
 
-- **Tahap aktif:** Tahap 1 selesai pada 2026-10-03
-- **Branch:** `feat/food-analyzer` sudah di-merge ke `main` (2026-10-03) dan dihapus. Tahap 2 dimulai di branch baru
-- **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (lokal, decision log D1–D27)
-- **Plan:** `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (lokal, semua task selesai)
-- **Langkah berikutnya:** brainstorming Tahap 2 (login + sinkron cloud, pertanyaan terbuka di spec §12)
+- **Tahap aktif:** Tahap 1 selesai pada 2026-10-03. Tambahan D28 (pemilih model AI) sedang dikerjakan
+- **Branch:** `feat/model-picker` (dari `main`). Tahap 2 nanti dimulai di branch baru
+- **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (lokal, decision log D1–D28)
+- **Plan:** `docs/superpowers/plans/2026-10-03-voltry-model-picker.md` (lokal, aktif). Plan Tahap 1: `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (semua task selesai)
+- **Langkah berikutnya:** kerjakan plan pemilih model AI, lalu brainstorming Tahap 2 (login + sinkron cloud, pertanyaan terbuka di spec §12)
 
 ---
 
@@ -59,7 +59,7 @@ Perbarui decision log di spec (tambahkan D16, D17, dan seterusnya) dan bagian te
 - **Framework:** Flutter (iOS + Android), Dart
 - **State:** Riverpod 3, `Notifier` / `AsyncNotifier`. **Provider ditulis manual**, tanpa `riverpod_generator`
 - **Routing:** go_router, dengan `StatefulShellRoute` untuk 2 tab (Home, History)
-- **AI:** Gemini (`gemini-3.7-flash`) lewat `firebase_ai` (Firebase AI Logic, backend Gemini Developer API), dipanggil langsung dari app
+- **AI:** Gemini lewat `firebase_ai` (Firebase AI Logic, backend Gemini Developer API), dipanggil langsung dari app. Model dipilih di app dari `enum AiModel` (default `gemini-3.7-flash`, spec D28)
 - **Penyimpanan:** `sqflite` untuk riwayat makan, `shared_preferences` untuk target kalori, file foto di folder documents app
 - **Model:** ditulis manual, **tanpa** Freezed atau json_serializable
 - **Codegen:** tidak ada. Proyek ini tidak memakai `build_runner`
@@ -149,7 +149,7 @@ Semua jawaban Gemini lewat `parseAnalysis` (`features/analysis/data/analysis_par
 | --- | --- |
 | sqflite | `LocalMealLogRepository` (dan `app_database.dart` untuk membuka database) |
 | File foto | `PhotoStorage` |
-| shared_preferences | `CalorieTargetRepository` |
+| shared_preferences | `CalorieTargetRepository` (target kalori) dan `AiModelRepository` (model AI) |
 | firebase_ai | `GeminiFoodAnalyzer` |
 | image_picker (kamera, galeri) | `PhotoPicker` |
 
