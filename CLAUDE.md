@@ -16,11 +16,11 @@ Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-desi
 
 Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesai ditulis, atau satu tahap selesai. Progres per task **tidak** dicatat di sini, tapi di checkbox plan.
 
-- **Tahap aktif:** Tahap 1 selesai pada 2026-10-03. Tambahan D28–D29 (pemilih model AI) selesai pada 2026-10-03, tinggal cek di device oleh owner
-- **Branch:** `feat/model-picker` sudah di-merge ke `main` (2026-10-03) dan dihapus. Tahap 2 dimulai di branch baru
+- **Tahap aktif:** Tahap 1 selesai pada 2026-10-03. Tambahan D28–D29 (pemilih model AI) dan D30 (ikon app) selesai pada 2026-10-03, tinggal cek di device oleh owner
+- **Branch:** `feat/model-picker` dan `chore/launcher-icon` sudah di-merge ke `main` (2026-10-03) dan dihapus. Tahap 2 dimulai di branch baru
 - **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (lokal, decision log D1–D30)
 - **Plan:** `docs/superpowers/plans/2026-10-03-voltry-model-picker.md` (lokal, semua task selesai kecuali Task 5 Step 2: cek di device). Plan Tahap 1: `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (semua task selesai)
-- **Langkah berikutnya:** owner menjalankan cek di device (plan Task 5 Step 2), lalu brainstorming Tahap 2 (login + sinkron cloud, pertanyaan terbuka di spec §12)
+- **Langkah berikutnya:** owner menjalankan cek di device (plan Task 5 Step 2, plus ikon app di home screen Android dan iOS), lalu brainstorming Tahap 2 (login + sinkron cloud, pertanyaan terbuka di spec §12)
 
 ---
 
