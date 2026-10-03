@@ -3,9 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voltry/core/errors/app_exception.dart';
 import 'package:voltry/core/widgets/hero_card.dart';
+import 'package:voltry/core/widgets/voltry_nav_bar.dart';
 import 'package:voltry/features/analysis/data/ai_model_repository.dart';
+import 'package:voltry/features/analysis/presentation/widgets/ai_model_button.dart';
 import 'package:voltry/features/analysis/presentation/widgets/ai_model_sheet.dart';
-import 'package:voltry/features/meal_log/presentation/pages/history_page.dart';
 
 import '../../../fakes/fake_meal_log_repository.dart';
 import '../../../fixtures/meal_log_fixtures.dart';
@@ -186,7 +187,7 @@ void main() {
   ) async {
     await pumpVoltryApp(tester, storedModelId: 'gemini-3.6-flash');
 
-    await tester.tap(find.byTooltip('AI model'));
+    await tester.tap(find.widgetWithText(AiModelButton, 'Gemini 3.6 Flash'));
     await tester.pumpAndSettle();
     expect(
       find.descendant(
@@ -196,25 +197,53 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.tap(find.text('Gemini 3.8 Flash'));
+    await tester.tap(find.widgetWithText(ListTile, 'Gemini 3.8 Flash'));
     await tester.pumpAndSettle();
 
     expect(find.text('Now using Gemini 3.8 Flash'), findsOneWidget);
+    expect(find.widgetWithText(AiModelButton, 'Gemini 3.8 Flash'), findsOne);
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getString(AiModelRepository.key), 'gemini-3.8-flash');
+  });
+
+  testWidgets('the header names the active model next to a chevron', (
+    tester,
+  ) async {
+    await pumpVoltryApp(tester);
+
+    expect(find.widgetWithText(AiModelButton, 'Gemini 3.7 Flash'), findsOne);
+    expect(
+      find.descendant(
+        of: find.byType(AiModelButton),
+        matching: find.byIcon(Icons.keyboard_arrow_down_rounded),
+      ),
+      findsOne,
+    );
+    expect(find.byIcon(Icons.tune_rounded), findsNothing);
+  });
+
+  testWidgets('the longest model name fits the header', (tester) async {
+    await pumpVoltryApp(tester, storedModelId: 'gemini-3.5-flash-lite');
+
+    expect(
+      find.widgetWithText(AiModelButton, 'Gemini 3.5 Flash-Lite'),
+      findsOne,
+    );
+    expect(find.text('Today'), findsOne);
   });
 
   testWidgets('the AI model sheet covers the navbar like the photo sheet', (
     tester,
   ) async {
     await pumpVoltryApp(tester);
-    await tester.tap(find.byTooltip('AI model'));
+    final history = tester.getCenter(find.bySemanticsLabel('History'));
+    await tester.tap(find.byType(AiModelButton));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.bySemanticsLabel('History'), warnIfMissed: false);
-    await tester.pumpAndSettle();
+    final navBar = tester.renderObject(find.byType(VoltryNavBar));
+    final hits = tester.hitTestOnBinding(history).path;
 
-    expect(find.byType(AiModelSheet), findsNothing);
-    expect(find.byType(HistoryPage), findsNothing);
+    expect(hits.any((entry) => entry.target == navBar), isFalse);
+    expect(find.byType(AiModelSheet), findsOne);
   });
 }

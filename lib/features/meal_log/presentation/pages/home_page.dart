@@ -15,7 +15,7 @@ import '../../../../core/widgets/hero_card.dart';
 import '../../../../core/widgets/pill_badge.dart';
 import '../../../../core/widgets/stat_tile.dart';
 import '../../../../core/widgets/voltry_nav_bar.dart';
-import '../../../analysis/presentation/widgets/ai_model_sheet.dart';
+import '../../../analysis/presentation/widgets/ai_model_button.dart';
 import '../../../calorie_target/domain/calorie_target_rules.dart';
 import '../../../calorie_target/presentation/controllers/calorie_target_controller.dart';
 import '../../../calorie_target/presentation/widgets/calorie_target_dialog.dart';
@@ -74,25 +74,24 @@ class _HomeContent extends ConsumerWidget {
         VoltryNavBar.reservedHeight,
       ),
       children: [
+        // The title is short and keeps its width. The model name gives way
+        // instead, with an ellipsis, when a large system text size leaves no
+        // room for both.
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Today', style: text.title),
-                  Text(
-                    formatShortDate(today),
-                    style: text.bodySmall.copyWith(color: colors.muted),
-                  ),
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Today', style: text.title),
+                Text(
+                  formatShortDate(today),
+                  style: text.bodySmall.copyWith(color: colors.muted),
+                ),
+              ],
             ),
-            CircleIconButton(
-              icon: Icons.tune_rounded,
-              tooltip: 'AI model',
-              onPressed: () => showAiModelSheet(context, ref),
-            ),
+            const SizedBox(width: 12),
+            const Flexible(child: AiModelButton()),
           ],
         ),
         const SizedBox(height: 16),
