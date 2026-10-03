@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1024" height="1024">
+  <title>Voltry app icon</title>
+  <!-- Full-bleed square: iOS and Android apply their own corner masks. -->
+  <rect width="512" height="512" fill="#FF5A5F"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M116 164 V140 Q116 116 140 116 H164"/>
+    <path d="M348 116 H372 Q396 116 396 140 V164"/>
+    <path d="M396 348 V372 Q396 396 372 396 H348"/>
+    <path d="M164 396 H140 Q116 396 116 372 V348"/>
+  </g>
+  <path d="M256 158 C318 152 360 196 356 254 C352 318 308 356 248 352 C190 348 152 306 156 250 C160 194 198 162 256 158 Z" fill="#FFFFFF"/>
+  <circle cx="262" cy="250" r="48" fill="#FFD23F"/>
+  <circle cx="279" cy="233" r="10" fill="#FFFFFF"/>
+</svg>

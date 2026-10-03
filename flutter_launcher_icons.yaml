@@ -1,0 +1,12 @@
+# Regenerate with `dart run flutter_launcher_icons` (spec D30).
+flutter_launcher_icons:
+  image_path: "assets/icon/voltry-app-icon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  # Android 8+ masks the foreground to a circle or squircle. Its coral edges
+  # blend into the coral background, and the 12% inset keeps the bracket
+  # corners inside the 66 dp safe zone so the circle mask does not clip them.
+  adaptive_icon_background: "#FF5A5F"
+  adaptive_icon_foreground: "assets/icon/voltry-app-icon.png"
+  adaptive_icon_foreground_inset: 12
