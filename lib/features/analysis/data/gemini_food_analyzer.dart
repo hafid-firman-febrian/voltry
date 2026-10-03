@@ -104,6 +104,10 @@ class GeminiFoodAnalyzer implements FoodAnalyzer {
     // package:http wraps socket errors in a ClientException that also
     // implements SocketException, so this catches offline and DNS errors.
     IOException() => NetworkException(error.toString()),
+    // firebase_ai turns any server message mentioning "quota" (such as the
+    // free tier's 429) into QuotaExceeded. Retrying right away cannot help,
+    // so the user gets a message of its own.
+    QuotaExceeded(:final message) => AiQuotaException(message),
     FirebaseAIException(:final message) => AiException(message),
     // firebase_ai casts the response body with `as`, so a malformed reply
     // arrives as a TypeError. Mapping it keeps the Analyze page from spinning

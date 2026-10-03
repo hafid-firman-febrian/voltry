@@ -155,4 +155,22 @@ void main() {
     expect(find.text('Snap your first meal of the day.'), findsOneWidget);
     expect(repository.logs, isEmpty);
   });
+
+  testWidgets('a used-up AI quota says so instead of a generic error', (
+    tester,
+  ) async {
+    await start(
+      tester,
+      FakeFoodAnalyzer([const AiQuotaException('429 quota exceeded')]),
+    );
+
+    await snapWithCamera(tester);
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text("You've reached today's AI limit. Please try again later."),
+      findsOneWidget,
+    );
+    expect(find.text('Try again'), findsOneWidget);
+  });
 }

@@ -23,6 +23,12 @@ final class AiException extends AppException {
     : super('Invalid AI response: $reason');
 }
 
+/// Gemini's quota for this project is used up (the free tier allows only a
+/// few requests per model per day), so retrying right away will not help.
+final class AiQuotaException extends AppException {
+  const AiQuotaException(super.detail);
+}
+
 /// sqflite, the file system, or shared_preferences failed.
 final class StorageException extends AppException {
   const StorageException(super.detail);
@@ -38,6 +44,8 @@ String errorMessage(Object error) => switch (error) {
   NetworkException() =>
     "You're offline or the connection is slow. Check it and try again.",
   AiException() => "Couldn't analyze this photo. Please try again.",
+  AiQuotaException() =>
+    "You've reached today's AI limit. Please try again later.",
   StorageException() =>
     "Couldn't access your data on this device. Please try again.",
   PhotoAccessException() =>

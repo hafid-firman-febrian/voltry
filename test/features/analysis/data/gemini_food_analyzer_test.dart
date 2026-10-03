@@ -87,4 +87,13 @@ void main() {
     expect(logs, hasLength(1));
     expect(logs.single, contains('Quota exceeded: 20 per day'));
   });
+
+  test('a used-up quota becomes AiQuotaException', () {
+    expect(
+      analyzeWith(
+        () async => throw QuotaExceeded('You exceeded your current quota'),
+      ),
+      throwsA(isA<AiQuotaException>()),
+    );
+  });
 }

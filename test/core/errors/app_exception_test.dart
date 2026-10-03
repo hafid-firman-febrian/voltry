@@ -34,4 +34,11 @@ void main() {
       'Invalid AI response: not JSON',
     );
   });
+
+  test('a used-up AI quota gets its own message', () {
+    expect(
+      errorMessage(const AiQuotaException('429 quota exceeded')),
+      "You've reached today's AI limit. Please try again later.",
+    );
+  });
 }
