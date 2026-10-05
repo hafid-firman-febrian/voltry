@@ -9,7 +9,7 @@ import 'package:voltry/features/analysis/data/ai_model_repository.dart';
 import 'package:voltry/features/analysis/data/gemini_food_analyzer.dart';
 import 'package:voltry/features/analysis/data/photo_picker.dart';
 import 'package:voltry/features/calorie_target/data/calorie_target_repository.dart';
-import 'package:voltry/features/meal_log/data/local_meal_log_repository.dart';
+import 'package:voltry/features/meal_log/data/firestore_meal_log_repository.dart';
 import 'package:voltry/features/meal_log/data/photo_storage.dart';
 
 import '../fakes/fake_food_analyzer.dart';

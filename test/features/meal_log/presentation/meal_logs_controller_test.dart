@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voltry/core/errors/app_exception.dart';
-import 'package:voltry/features/meal_log/data/local_meal_log_repository.dart';
+import 'package:voltry/features/meal_log/data/firestore_meal_log_repository.dart';
 import 'package:voltry/features/meal_log/data/photo_storage.dart';
 import 'package:voltry/features/meal_log/domain/meal_log_model.dart';
 import 'package:voltry/features/meal_log/presentation/controllers/meal_logs_controller.dart';

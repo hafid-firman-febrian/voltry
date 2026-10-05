@@ -10,7 +10,7 @@ import 'package:voltry/features/analysis/domain/analysis_result.dart';
 import 'package:voltry/features/analysis/domain/nutrition_analysis_model.dart';
 import 'package:voltry/features/analysis/presentation/controllers/analyze_controller.dart';
 import 'package:voltry/features/analysis/presentation/states/analyze_state.dart';
-import 'package:voltry/features/meal_log/data/local_meal_log_repository.dart';
+import 'package:voltry/features/meal_log/data/firestore_meal_log_repository.dart';
 import 'package:voltry/features/meal_log/data/photo_storage.dart';
 import 'package:voltry/features/meal_log/domain/meal_log_model.dart';
 

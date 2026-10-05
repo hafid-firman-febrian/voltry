@@ -1,7 +1,6 @@
 import '../domain/meal_log_model.dart';
 
-/// The only door to stored meal logs. Stage 2 adds a cloud implementation
-/// behind this same interface.
+/// The only door to stored meal logs.
 abstract interface class MealLogRepository {
   /// All logs, newest first.
   Future<List<MealLog>> fetchAll();

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_exception.dart';
-import '../../data/local_meal_log_repository.dart';
+import '../../data/firestore_meal_log_repository.dart';
 import '../../data/photo_storage.dart';
 import '../../domain/daily_summary.dart';
 import '../../domain/meal_log_model.dart';
