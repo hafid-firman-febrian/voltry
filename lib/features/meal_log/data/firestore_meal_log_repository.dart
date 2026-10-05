@@ -31,9 +31,23 @@ class FirestoreMealLogRepository implements MealLogRepository {
       final snapshot = await _meals
           .orderBy('created_at', descending: true)
           .get();
-      return [for (final doc in snapshot.docs) MealLog.fromRow(doc.data())];
+      return [for (final doc in snapshot.docs) ?_parse(doc)];
     } on FirebaseException catch (error) {
       throw firestoreError(error);
+    }
+  }
+
+  // Firestore has no schema, and a meal edited by hand in the Firebase
+  // console can hold a fraction or miss a field. Skipping that one document
+  // keeps every other meal on screen instead of failing the whole history.
+  MealLog? _parse(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    try {
+      return MealLog.fromRow(doc.data());
+    } on TypeError catch (error) {
+      if (kDebugMode) {
+        debugPrint('FirestoreMealLogRepository skipped meal ${doc.id}: $error');
+      }
+      return null;
     }
   }
 

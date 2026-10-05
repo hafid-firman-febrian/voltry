@@ -63,6 +63,26 @@ void main() {
     expect(await repository.fetchAll(), [log]);
   });
 
+  test(
+    'a malformed meal document is skipped and the rest still load',
+    () async {
+      final good = mealLog(id: 'good');
+      await repository.insert(good);
+      final meals = firestore.collection('users/${testUser.uid}/meals');
+      // Hand edits in the Firebase console can store a fraction or drop a
+      // field, which Firestore accepts because it has no schema.
+      await meals.doc('fraction').set({
+        ...mealLog(id: 'fraction').toRow(),
+        'calories': 450.5,
+      });
+      await meals
+          .doc('missing')
+          .set({...mealLog(id: 'missing').toRow()}..remove('food_name'));
+
+      expect(await repository.fetchAll(), [good]);
+    },
+  );
+
   test("one user never sees another user's meals", () async {
     await repository.insert(mealLog(id: 'mine'));
 

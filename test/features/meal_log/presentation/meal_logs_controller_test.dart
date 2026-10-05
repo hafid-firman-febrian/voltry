@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voltry/core/errors/app_exception.dart';
+import 'package:voltry/features/auth/data/auth_repository.dart';
+import 'package:voltry/features/auth/presentation/controllers/auth_state_controller.dart';
 import 'package:voltry/features/meal_log/data/firestore_meal_log_repository.dart';
 import 'package:voltry/features/meal_log/data/photo_storage.dart';
 import 'package:voltry/features/meal_log/domain/meal_log_model.dart';
 import 'package:voltry/features/meal_log/presentation/controllers/meal_logs_controller.dart';
 
+import '../../../fakes/fake_auth_repository.dart';
 import '../../../fakes/fake_meal_log_repository.dart';
 import '../../../fakes/fake_photo_storage.dart';
+import '../../../fixtures/app_user_fixtures.dart';
 import '../../../fixtures/meal_log_fixtures.dart';
 
 void main() {
@@ -122,6 +128,40 @@ void main() {
     await controller().reload();
 
     expect(await load(), [older]);
+  });
+
+  test("a reload that ends after an account switch keeps the new account's "
+      'meals', () async {
+    final auth = FakeAuthRepository(user: testUser);
+    final mine = FakeMealLogRepository([older]);
+    final theirs = FakeMealLogRepository([newer]);
+    final switching = ProviderContainer.test(
+      retry: (_, _) => null,
+      overrides: [
+        authRepositoryProvider.overrideWithValue(auth),
+        mealLogRepositoryProvider.overrideWith(
+          (ref) => ref.watch(currentUserProvider) == testUser ? mine : theirs,
+        ),
+        photoStorageProvider.overrideWithValue(photos),
+      ],
+    );
+    switching.listen(mealLogsControllerProvider, (_, _) {});
+    await switching.read(mealLogsControllerProvider.future);
+    mine.gate = Completer<void>();
+    final staleReload = switching
+        .read(mealLogsControllerProvider.notifier)
+        .reload();
+
+    auth
+      ..emit(null)
+      ..emit(otherUser);
+    await Future<void>.delayed(Duration.zero);
+    expect(await switching.read(mealLogsControllerProvider.future), [newer]);
+
+    mine.gate!.complete();
+    await staleReload;
+
+    expect(switching.read(mealLogsControllerProvider).value, [newer]);
   });
 
   test('purgePhoto deletes the file and swallows storage errors', () async {

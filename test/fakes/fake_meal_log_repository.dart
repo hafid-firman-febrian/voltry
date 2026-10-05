@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:voltry/core/errors/app_exception.dart';
 import 'package:voltry/features/meal_log/data/meal_log_repository.dart';
 import 'package:voltry/features/meal_log/domain/daily_summary.dart';
@@ -12,8 +14,12 @@ class FakeMealLogRepository implements MealLogRepository {
   /// When set, the next call to any method throws it.
   AppException? failWith;
 
+  /// When set, fetchAll waits for it, to finish a fetch at a chosen moment.
+  Completer<void>? gate;
+
   @override
   Future<List<MealLog>> fetchAll() async {
+    await gate?.future;
     _maybeFail();
     return [...logs]..sort(newestFirst);
   }

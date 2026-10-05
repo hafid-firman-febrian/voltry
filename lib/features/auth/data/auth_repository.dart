@@ -47,7 +47,12 @@ class AuthRepository {
         GoogleAuthProvider.credential(idToken: idToken),
       );
     } on GoogleSignInException catch (error) {
-      if (error.code == GoogleSignInExceptionCode.canceled) return;
+      if (error.code == GoogleSignInExceptionCode.canceled) {
+        // Not an error for the user, but Android also reports a missing
+        // SHA-1 or OAuth client as a cancel, so keep it in the console.
+        if (kDebugMode) debugPrint('AuthRepository sign-in canceled: $error');
+        return;
+      }
       throw _report(error);
     } catch (error) {
       throw _report(error);
