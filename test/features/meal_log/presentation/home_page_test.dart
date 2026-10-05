@@ -8,6 +8,7 @@ import 'package:voltry/features/analysis/data/ai_model_repository.dart';
 import 'package:voltry/features/analysis/presentation/widgets/ai_model_button.dart';
 import 'package:voltry/features/analysis/presentation/widgets/ai_model_sheet.dart';
 
+import '../../../fakes/fake_calorie_target_repository.dart';
 import '../../../fakes/fake_meal_log_repository.dart';
 import '../../../fixtures/meal_log_fixtures.dart';
 import '../../../helpers/pump_voltry_app.dart';
@@ -96,6 +97,30 @@ void main() {
     await tester.tap(find.text('Retry'));
     await tester.pumpAndSettle();
 
+    expect(find.text('Nasi goreng'), findsOneWidget);
+  });
+
+  testWidgets('shows a failed target load with Retry', (tester) async {
+    final targets = FakeCalorieTargetRepository(1800)
+      ..failReadWith = const NetworkException('unavailable');
+    await pumpVoltryApp(
+      tester,
+      repository: FakeMealLogRepository([lunch]),
+      targets: targets,
+    );
+
+    expect(
+      find.text(
+        "You're offline or the connection is slow. Check it and try again.",
+      ),
+      findsOneWidget,
+    );
+
+    targets.failReadWith = null;
+    await tester.tap(find.text('Retry'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Daily target · 1,800 kcal'), findsOneWidget);
     expect(find.text('Nasi goreng'), findsOneWidget);
   });
 

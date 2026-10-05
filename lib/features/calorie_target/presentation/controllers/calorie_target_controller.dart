@@ -3,15 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/calorie_target_repository.dart';
 
 final calorieTargetControllerProvider =
-    NotifierProvider<CalorieTargetController, int>(CalorieTargetController.new);
+    AsyncNotifierProvider<CalorieTargetController, int>(
+      CalorieTargetController.new,
+      // Home shows a failed load with Retry right away, the same way it does
+      // for the meal logs, instead of a spinner during Riverpod's backoff.
+      retry: (_, _) => null,
+    );
 
-class CalorieTargetController extends Notifier<int> {
+class CalorieTargetController extends AsyncNotifier<int> {
   @override
-  int build() => ref.watch(calorieTargetRepositoryProvider).read();
+  Future<int> build() => ref.watch(calorieTargetRepositoryProvider).read();
 
-  /// Throws StorageException and keeps the old target when saving fails.
-  Future<void> update(int kcal) async {
+  // Not `update`: AsyncNotifier already has an update method.
+  Future<void> save(int kcal) async {
     await ref.read(calorieTargetRepositoryProvider).write(kcal);
-    state = kcal;
+    state = AsyncData(kcal);
   }
 }

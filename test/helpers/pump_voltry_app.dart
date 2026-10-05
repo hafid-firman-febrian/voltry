@@ -9,9 +9,11 @@ import 'package:voltry/features/analysis/data/ai_model_repository.dart';
 import 'package:voltry/features/analysis/data/gemini_food_analyzer.dart';
 import 'package:voltry/features/analysis/data/photo_picker.dart';
 import 'package:voltry/features/calorie_target/data/calorie_target_repository.dart';
+import 'package:voltry/features/calorie_target/domain/calorie_target_rules.dart';
 import 'package:voltry/features/meal_log/data/firestore_meal_log_repository.dart';
 import 'package:voltry/features/meal_log/data/photo_storage.dart';
 
+import '../fakes/fake_calorie_target_repository.dart';
 import '../fakes/fake_food_analyzer.dart';
 import '../fakes/fake_meal_log_repository.dart';
 import '../fakes/fake_photo_picker.dart';
@@ -28,6 +30,7 @@ Future<void> pumpVoltryApp(
   FakePhotoStorage? photos,
   FakeFoodAnalyzer? analyzer,
   FakePhotoPicker? picker,
+  FakeCalorieTargetRepository? targets,
   int? storedTarget,
   String? storedModelId,
   DateTime Function()? clock,
@@ -39,7 +42,6 @@ Future<void> pumpVoltryApp(
   addTearDown(tester.view.reset);
 
   SharedPreferences.setMockInitialValues({
-    CalorieTargetRepository.key: ?storedTarget,
     AiModelRepository.key: ?storedModelId,
   });
   final preferences = await SharedPreferences.getInstance();
@@ -47,6 +49,12 @@ Future<void> pumpVoltryApp(
     sharedPreferencesProvider.overrideWithValue(preferences),
     mealLogRepositoryProvider.overrideWithValue(
       repository ?? FakeMealLogRepository(),
+    ),
+    calorieTargetRepositoryProvider.overrideWithValue(
+      targets ??
+          FakeCalorieTargetRepository(
+            storedTarget ?? CalorieTargetRules.fallback,
+          ),
     ),
     photoStorageProvider.overrideWithValue(photos ?? FakePhotoStorage()),
     foodAnalyzerProvider.overrideWithValue(analyzer ?? FakeFoodAnalyzer([])),

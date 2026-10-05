@@ -30,19 +30,25 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final logs = ref.watch(mealLogsControllerProvider);
+    final target = ref.watch(calorieTargetControllerProvider);
     final today = ref.watch(todayProvider);
 
     return Scaffold(
       body: SafeArea(
         bottom: false,
-        child: switch (logs) {
-          AsyncData(:final value) => _HomeContent(
-            meals: logsOnDay(value, today),
-            today: today,
-          ),
-          AsyncError(:final error) => ErrorView(
+        child: switch ((logs, target)) {
+          (AsyncData(value: final meals), AsyncData(value: final kcal)) =>
+            _HomeContent(
+              meals: logsOnDay(meals, today),
+              today: today,
+              target: kcal,
+            ),
+          (AsyncError(:final error), _) ||
+          (_, AsyncError(:final error)) => ErrorView(
             message: errorMessage(error),
-            onRetry: () => ref.invalidate(mealLogsControllerProvider),
+            onRetry: () => ref
+              ..invalidate(mealLogsControllerProvider)
+              ..invalidate(calorieTargetControllerProvider),
           ),
           _ => const Center(child: CircularProgressIndicator()),
         },
@@ -52,19 +58,25 @@ class HomePage extends ConsumerWidget {
 }
 
 class _HomeContent extends ConsumerWidget {
-  const _HomeContent({required this.meals, required this.today});
+  const _HomeContent({
+    required this.meals,
+    required this.today,
+    required this.target,
+  });
 
   final List<MealLog> meals;
 
   /// Local midnight of the day shown.
   final DateTime today;
 
+  /// Daily calorie target in kcal.
+  final int target;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     final text = context.textStyles;
     final summary = summarizeDay(meals);
-    final target = ref.watch(calorieTargetControllerProvider);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(

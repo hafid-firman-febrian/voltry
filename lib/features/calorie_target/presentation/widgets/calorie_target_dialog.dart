@@ -12,12 +12,14 @@ import '../controllers/calorie_target_controller.dart';
 Future<void> editCalorieTarget(BuildContext context, WidgetRef ref) async {
   final kcal = await showDialog<int>(
     context: context,
-    builder: (_) =>
-        CalorieTargetDialog(initial: ref.read(calorieTargetControllerProvider)),
+    // Home offers this only once the target has loaded.
+    builder: (_) => CalorieTargetDialog(
+      initial: ref.read(calorieTargetControllerProvider).requireValue,
+    ),
   );
   if (kcal == null || !context.mounted) return;
   try {
-    await ref.read(calorieTargetControllerProvider.notifier).update(kcal);
+    await ref.read(calorieTargetControllerProvider.notifier).save(kcal);
   } on AppException catch (error) {
     if (context.mounted) showMessage(context, errorMessage(error));
   }
