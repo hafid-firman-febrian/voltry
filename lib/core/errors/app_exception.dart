@@ -29,9 +29,14 @@ final class AiQuotaException extends AppException {
   const AiQuotaException(super.detail);
 }
 
-/// sqflite, the file system, or shared_preferences failed.
+/// Firestore, the file system, or shared_preferences failed.
 final class StorageException extends AppException {
   const StorageException(super.detail);
+}
+
+/// Google or Firebase Auth could not sign the user in or out.
+final class AuthException extends AppException {
+  const AuthException(super.detail);
 }
 
 /// The camera or photo library is unavailable or access was denied.
@@ -47,9 +52,9 @@ String errorMessage(Object error) => switch (error) {
   AiQuotaException() =>
     'This AI model has reached its free limit. '
         'Switch models or try again later.',
-  StorageException() =>
-    "Couldn't access your data on this device. Please try again.",
+  StorageException() => "Couldn't access your data. Please try again.",
   PhotoAccessException() =>
     "Couldn't open the camera or photos. Check Voltry's access in Settings.",
+  AuthException() => "Couldn't sign in with Google. Please try again.",
   _ => 'Something went wrong. Please try again.',
 };

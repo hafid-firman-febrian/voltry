@@ -88,7 +88,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(
-      find.text("Couldn't access your data on this device. Please try again."),
+      find.text("Couldn't access your data. Please try again."),
       findsOneWidget,
     );
 

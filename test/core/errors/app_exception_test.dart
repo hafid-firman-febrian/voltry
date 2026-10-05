@@ -13,11 +13,18 @@ void main() {
     );
     expect(
       errorMessage(const StorageException('disk full')),
-      "Couldn't access your data on this device. Please try again.",
+      "Couldn't access your data. Please try again.",
     );
     expect(
       errorMessage(const PhotoAccessException('camera_access_denied')),
       "Couldn't open the camera or photos. Check Voltry's access in Settings.",
+    );
+  });
+
+  test('a failed Google sign in says so', () {
+    expect(
+      errorMessage(const AuthException('sign_in_failed')),
+      "Couldn't sign in with Google. Please try again.",
     );
   });
 

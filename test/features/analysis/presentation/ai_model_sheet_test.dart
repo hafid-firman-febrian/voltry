@@ -107,7 +107,7 @@ void main() {
     expect(switched, isFalse);
     expect(repository.stored, AiModel.gemini36Flash);
     expect(
-      find.text("Couldn't access your data on this device. Please try again."),
+      find.text("Couldn't access your data. Please try again."),
       findsOneWidget,
     );
   });

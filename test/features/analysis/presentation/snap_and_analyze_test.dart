@@ -131,7 +131,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text("Couldn't access your data on this device. Please try again."),
+      find.text("Couldn't access your data. Please try again."),
       findsOneWidget,
     );
     expect(find.text('AI ESTIMATE'), findsOneWidget);
