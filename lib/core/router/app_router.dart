@@ -1,8 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../features/analysis/presentation/pages/analyze_page.dart';
+import '../../features/auth/domain/app_user_model.dart';
+import '../../features/auth/presentation/controllers/auth_state_controller.dart';
+import '../../features/auth/presentation/pages/sign_in_page.dart';
 import '../../features/meal_log/presentation/pages/history_page.dart';
 import '../../features/meal_log/presentation/pages/home_page.dart';
 import '../../features/meal_log/presentation/pages/meal_detail_page.dart';
@@ -10,10 +14,22 @@ import 'app_routes.dart';
 import 'app_shell.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
+  // The router listens to this copy of the auth state instead of watching
+  // the provider: rebuilding the GoRouter would throw away the navigation
+  // stack, while refreshListenable only re-runs redirect.
+  final user = ValueNotifier<AppUser?>(ref.read(authStateProvider));
+  ref.listen(authStateProvider, (_, next) => user.value = next);
+
   final router = GoRouter(
     initialLocation: AppRoutes.home,
-    // Stage 2 adds the sign-in check here, as a top-level redirect.
+    refreshListenable: user,
+    redirect: (_, state) {
+      final atSignIn = state.matchedLocation == AppRoutes.signIn;
+      if (user.value == null) return atSignIn ? null : AppRoutes.signIn;
+      return atSignIn ? AppRoutes.home : null;
+    },
     routes: [
+      GoRoute(path: AppRoutes.signIn, builder: (_, _) => const SignInPage()),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [
@@ -48,6 +64,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
-  ref.onDispose(router.dispose);
+  ref.onDispose(() {
+    router.dispose();
+    user.dispose();
+  });
   return router;
 });

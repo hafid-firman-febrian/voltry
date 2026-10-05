@@ -8,24 +8,29 @@ import 'package:voltry/core/providers/core_providers.dart';
 import 'package:voltry/features/analysis/data/ai_model_repository.dart';
 import 'package:voltry/features/analysis/data/gemini_food_analyzer.dart';
 import 'package:voltry/features/analysis/data/photo_picker.dart';
+import 'package:voltry/features/auth/data/auth_repository.dart';
 import 'package:voltry/features/calorie_target/data/calorie_target_repository.dart';
 import 'package:voltry/features/calorie_target/domain/calorie_target_rules.dart';
 import 'package:voltry/features/meal_log/data/firestore_meal_log_repository.dart';
 import 'package:voltry/features/meal_log/data/photo_storage.dart';
 
+import '../fakes/fake_auth_repository.dart';
 import '../fakes/fake_calorie_target_repository.dart';
 import '../fakes/fake_food_analyzer.dart';
 import '../fakes/fake_meal_log_repository.dart';
 import '../fakes/fake_photo_picker.dart';
 import '../fakes/fake_photo_storage.dart';
+import '../fixtures/app_user_fixtures.dart';
 
 /// "Now" for every app-level test: Thursday 1 October 2026, 20:00 local.
 final testNow = DateTime(2026, 10, 1, 20);
 
 /// Pumps the whole app, router included, on top of fakes, on an iPhone-sized
-/// screen (390 x 844). With [settle], waits until the first page has loaded.
+/// screen (390 x 844). Signed in as [testUser] unless [auth] says otherwise.
+/// With [settle], waits until the first page has loaded.
 Future<void> pumpVoltryApp(
   WidgetTester tester, {
+  FakeAuthRepository? auth,
   FakeMealLogRepository? repository,
   FakePhotoStorage? photos,
   FakeFoodAnalyzer? analyzer,
@@ -47,6 +52,9 @@ Future<void> pumpVoltryApp(
   final preferences = await SharedPreferences.getInstance();
   final overrides = <Override>[
     sharedPreferencesProvider.overrideWithValue(preferences),
+    authRepositoryProvider.overrideWithValue(
+      auth ?? FakeAuthRepository(user: testUser),
+    ),
     mealLogRepositoryProvider.overrideWithValue(
       repository ?? FakeMealLogRepository(),
     ),
