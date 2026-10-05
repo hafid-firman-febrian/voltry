@@ -2,11 +2,11 @@
 
 ## Project Context
 
-Voltry adalah app Flutter untuk menganalisis makanan dari foto. User memotret makanan, lalu AI (Gemini lewat `firebase_ai`) memperkirakan nama makanan, kalori, dan makro (protein, karbo, lemak) untuk seluruh isi piring. Hasilnya disimpan sebagai riwayat lokal, dan Home menampilkan total kalori hari ini dibanding target harian.
+Voltry adalah app Flutter untuk menganalisis makanan dari foto. User login dengan Google, memotret makanan, lalu AI (Gemini lewat `firebase_ai`) memperkirakan nama makanan, kalori, dan makro (protein, karbo, lemak) untuk seluruh isi piring. Hasilnya disimpan sebagai riwayat di akun user (Cloud Firestore), sehingga kembali setelah install ulang atau di HP lain, dan Home menampilkan total kalori hari ini dibanding target harian.
 
 Ini **proyek portofolio untuk Upwork**. Hasil akhirnya repo GitHub, README, dan video demo. App hanya dijalankan oleh owner (tidak ada rilis ke store atau APK publik). Prinsip scope: **kecil dan cepat selesai, dengan satu alur utama yang rapi**. Bahasa UI: Inggris. Satuan: metrik. Light mode saja.
 
-Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md`. **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log D1–D30 di sana menjelaskan alasan tiap keputusan.
+Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (Tahap 1, decision log D1–D30) dan `docs/superpowers/specs/2026-10-05-voltry-auth-sync-design.md` (Tahap 2, D31–D42). **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log di sana menjelaskan alasan tiap keputusan.
 
 `../arsip-voltry` berisi Voltry versi lama (AI fitness coach, Supabase + Claude) yang sudah ditinggalkan. **Spec, plan, dan aturannya tidak berlaku di sini.** Dari arsip itu, yang dipakai hanya design system Candy Sport.
 
@@ -16,11 +16,11 @@ Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-desi
 
 Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesai ditulis, atau satu tahap selesai. Progres per task **tidak** dicatat di sini, tapi di checkbox plan.
 
-- **Tahap aktif:** Tahap 1 selesai pada 2026-10-03. Tambahan D28–D29 (pemilih model AI) dan D30 (ikon app) selesai pada 2026-10-03, tinggal cek di device oleh owner
-- **Branch:** `feat/model-picker` dan `chore/launcher-icon` sudah di-merge ke `main` (2026-10-03) dan dihapus. Tahap 2 dimulai di branch baru
-- **Spec:** `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (lokal, decision log D1–D30)
-- **Plan:** `docs/superpowers/plans/2026-10-03-voltry-model-picker.md` (lokal, semua task selesai kecuali Task 5 Step 2: cek di device). Plan Tahap 1: `docs/superpowers/plans/2026-10-01-voltry-food-analyzer.md` (semua task selesai)
-- **Langkah berikutnya:** owner menjalankan cek di device (plan Task 5 Step 2, plus ikon app di home screen Android dan iOS), lalu brainstorming Tahap 2 (login + sinkron cloud, pertanyaan terbuka di spec §12)
+- **Tahap aktif:** Tahap 2 (login Google + sinkron Firestore). Spec disetujui owner pada 2026-10-05
+- **Branch:** `feat/auth-sync`, dibuat dari `main`
+- **Spec:** `docs/superpowers/specs/2026-10-05-voltry-auth-sync-design.md` (lokal, decision log D31–D42). Spec Tahap 1: `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (D1–D30)
+- **Plan:** `docs/superpowers/plans/2026-10-05-voltry-auth-sync.md` (lokal). Plan sebelumnya: `2026-10-01-voltry-food-analyzer.md` (selesai) dan `2026-10-03-voltry-model-picker.md` (Task 5 Step 2, cek di device, dikerjakan bersama cek di device Task 10 plan Tahap 2)
+- **Langkah berikutnya:** kerjakan plan Tahap 2 mulai dari task pertama yang masih `- [ ]`
 
 ---
 
@@ -58,17 +58,18 @@ Perbarui decision log di spec (tambahkan D16, D17, dan seterusnya) dan bagian te
 
 - **Framework:** Flutter (iOS + Android), Dart
 - **State:** Riverpod 3, `Notifier` / `AsyncNotifier`. **Provider ditulis manual**, tanpa `riverpod_generator`
-- **Routing:** go_router, dengan `StatefulShellRoute` untuk 2 tab (Home, History)
+- **Routing:** go_router, dengan `redirect` ke layar Sign in saat belum login dan `StatefulShellRoute` untuk 2 tab (Home, History)
 - **AI:** Gemini lewat `firebase_ai` (Firebase AI Logic, backend Gemini Developer API), dipanggil langsung dari app. Model dipilih di app dari `enum AiModel` (default `gemini-3.7-flash`, spec D28)
-- **Penyimpanan:** `sqflite` untuk riwayat makan, `shared_preferences` untuk target kalori, file foto di folder documents app
+- **Auth:** Firebase Auth dengan Google Sign-In (`firebase_auth` + `google_sign_in` 7). Login wajib (spec D31)
+- **Penyimpanan:** Cloud Firestore untuk riwayat makan dan target kalori (`users/{uid}`, dengan cache offline bawaan Firestore), `shared_preferences` untuk pilihan model AI, file foto di folder documents app (tidak disinkron, spec D35)
 - **Model:** ditulis manual, **tanpa** Freezed atau json_serializable
 - **Codegen:** tidak ada. Proyek ini tidak memakai `build_runner`
 - **Styling:** Material 3 dengan token Candy Sport (`ThemeExtension`), font Urbanist sebagai asset
 
 ## Roadmap
 
-1. **Tahap 1: analyzer lokal** (sekarang). Foto → AI → hasil → riwayat + total harian + target kalori.
-2. **Tahap 2: login + sinkron cloud.** Akan punya spec dan plan sendiri. Pertanyaan terbukanya ada di spec §12.
+1. **Tahap 1: analyzer lokal** (selesai 2026-10-03). Foto → AI → hasil → riwayat + total harian + target kalori.
+2. **Tahap 2: login + sinkron cloud** (sekarang). Login Google wajib, riwayat dan target kalori disimpan di Firestore per akun. Spec: `2026-10-05-voltry-auth-sync-design.md`.
 
 Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutnya.
 
@@ -78,11 +79,10 @@ Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutn
   - `theme/`: token, `VoltryColors`, `VoltryText`
   - `router/`
   - `widgets/`: komponen design system
-  - `database/`: membuka sqflite + versi schema
-  - `errors/`: `AppException` dan `errorMessage`
+  - `errors/`: `AppException`, `errorMessage`, dan `firestoreError`
   - `formatting/`: format angka dan tanggal
-  - `providers/`: `databaseProvider`, `sharedPreferencesProvider`, `clockProvider`, `idGeneratorProvider`, dan `todayProvider` (hari ini, maju saat tengah malam dan saat app kembali ke foreground)
-- `lib/features/<feature>/` punya struktur `domain/`, `data/`, dan `presentation/{controllers,states,pages,widgets}`. Feature yang ada: `analysis`, `meal_log`, `calorie_target`.
+  - `providers/`: `sharedPreferencesProvider`, `firestoreProvider`, `clockProvider`, `idGeneratorProvider`, dan `todayProvider` (hari ini, maju saat tengah malam dan saat app kembali ke foreground)
+- `lib/features/<feature>/` punya struktur `domain/`, `data/`, dan `presentation/{controllers,states,pages,widgets}`. Feature yang ada: `auth`, `analysis`, `meal_log`, `calorie_target`.
 - `test/` mengikuti struktur `lib/`. Versi palsu untuk test ada di `test/fakes/`.
 - `docs/superpowers/specs/` dan `docs/superpowers/plans/`: spec dan plan per tahap. **Hanya lokal**: di-gitignore dan tidak pernah di-commit.
 - `docs/design/`: referensi visual Candy Sport.
@@ -90,7 +90,7 @@ Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutn
 
 ## Commands
 
-- `flutter run`: jalankan app. Analisis foto butuh konfigurasi Firebase lokal (lihat `docs/setup/firebase.md`)
+- `flutter run`: jalankan app. Login dan analisis foto butuh konfigurasi Firebase lokal (lihat `docs/setup/firebase.md`)
 - `flutter analyze`: linter
 - `flutter test`: semua test
 - `flutter test test/path/to/file_test.dart`: satu file test
@@ -123,7 +123,7 @@ Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutn
 
 ### Git
 
-- Satu branch per tahap (Tahap 1: `feat/food-analyzer`), lalu PR ke `main` saat tahapnya selesai.
+- Satu branch per tahap (Tahap 1: `feat/food-analyzer`, Tahap 2: `feat/auth-sync`), lalu PR ke `main` saat tahapnya selesai.
 - Conventional commits: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`. Tipe `wip:` hanya untuk berhenti di tengah task.
 - **Jangan tambahkan `Co-Authored-By` atau atribusi Claude apa pun** di pesan commit maupun deskripsi PR. Aturan ini juga berlaku untuk commit yang dibuat subagent saat mengerjakan plan, jadi tulis larangan ini di setiap prompt subagent. Setelah commit, cek dengan `git log -1 --format=%B`. Kalau trailer atribusi ikut masuk, perbaiki dengan `git commit --amend`.
 - Jangan push atau membuat PR tanpa diminta.
@@ -138,7 +138,7 @@ Aturan di bawah **tidak akan tertangkap `flutter analyze`**. Kalau dilanggar, ko
 
 ### 1. Konfigurasi Firebase tidak pernah di-commit
 
-`lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`, dan `firebase.json` ada di `.gitignore`. Repo-nya publik dan tidak memakai App Check, jadi siapa pun yang memegang konfigurasi itu bisa menghabiskan kuota Gemini milik owner. `main.dart` memanggil `Firebase.initializeApp()` tanpa options (spec D16), jadi kode tetap compile dan test tetap jalan tanpa file-file itu. Jangan meng-import `firebase_options.dart`.
+`lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`, dan `firebase.json` ada di `.gitignore`. Repo-nya publik dan tidak memakai App Check, jadi siapa pun yang memegang konfigurasi itu bisa menghabiskan kuota Gemini milik owner. `main.dart` memanggil `Firebase.initializeApp()` tanpa options (spec D16), jadi kode tetap compile dan test tetap jalan tanpa file-file itu. Jangan meng-import `firebase_options.dart`. `firestore.rules` di-commit karena tidak rahasia. **Pengecualian (spec D40):** `GIDClientID` dan URL scheme `REVERSED_CLIENT_ID` di `ios/Runner/Info.plist` di-commit. Keduanya OAuth client ID publik yang wajib ada untuk Google Sign-In di iOS, dan tidak memberi akses ke Gemini maupun Firestore.
 
 ### 2. Output AI tidak pernah dipercaya mentah
 
@@ -148,25 +148,26 @@ Semua jawaban Gemini lewat `parseAnalysis` (`features/analysis/data/analysis_par
 
 | Sumber | Satu-satunya class yang boleh menyentuh |
 | --- | --- |
-| sqflite | `LocalMealLogRepository` (dan `app_database.dart` untuk membuka database) |
+| cloud_firestore | `FirestoreMealLogRepository` (riwayat makan) dan `CalorieTargetRepository` (target kalori) |
+| firebase_auth, google_sign_in | `AuthRepository` |
 | File foto | `PhotoStorage` |
-| shared_preferences | `CalorieTargetRepository` (target kalori) dan `AiModelRepository` (model AI) |
+| shared_preferences | `AiModelRepository` (model AI) |
 | firebase_ai | `GeminiFoodAnalyzer` |
 | image_picker (kamera, galeri) | `PhotoPicker` |
 
-Widget → controller → repository/analyzer. Semua diakses lewat provider, supaya bisa diganti versi palsu di test. Aturan ini juga yang membuat Tahap 2 tinggal menambah implementasi `MealLogRepository` baru.
+Widget → controller → repository/analyzer. Semua diakses lewat provider, supaya bisa diganti versi palsu di test. Berkat aturan ini, Tahap 2 cukup mengganti implementasi `MealLogRepository` tanpa mengubah layar.
 
 ### 4. Exception pihak ketiga berhenti di layer data
 
-`SocketException`, `TimeoutException`, exception `firebase_ai`, `DatabaseException`, `FileSystemException`, dan `PlatformException` dari `image_picker` diubah jadi `sealed class AppException` (`NetworkException`, `AiException`, `AiQuotaException`, `StorageException`, `PhotoAccessException`) di repository, analyzer, `PhotoStorage`, atau `PhotoPicker`. UI hanya mengenal `AppException`. "Bukan makanan" bukan exception, tapi hasil `NotFood`.
+`SocketException`, `TimeoutException`, exception `firebase_ai`, `FirebaseException` dari Firestore (lewat `firestoreError`), `FirebaseAuthException` dan `GoogleSignInException` (lewat `authError`), `FileSystemException`, dan `PlatformException` dari `image_picker` diubah jadi `sealed class AppException` (`NetworkException`, `AiException`, `AiQuotaException`, `StorageException`, `PhotoAccessException`, `AuthException`) di repository, analyzer, `AuthRepository`, `PhotoStorage`, atau `PhotoPicker`. UI hanya mengenal `AppException`. "Bukan makanan" bukan exception, tapi hasil `NotFood`. Menutup pemilih akun Google juga bukan exception: `signInWithGoogle` selesai tanpa login.
 
 ### 5. Waktu disimpan sebagai epoch milidetik UTC
 
-Kolom `created_at` bertipe INTEGER (`millisecondsSinceEpoch` dari waktu UTC). **Jangan menyimpan string ISO**, karena digit mikrodetik dari `toIso8601String()` membuat urutan string salah. Untuk tampilan dan pengelompokan per hari, pakai `toLocal()`.
+Field `created_at` di dokumen meal Firestore berisi integer `millisecondsSinceEpoch` dari waktu UTC, bukan `Timestamp`, supaya `MealLog.toRow()` dan `fromRow()` dipakai apa adanya. **Jangan menyimpan string ISO**, karena digit mikrodetik dari `toIso8601String()` membuat urutan string salah. Untuk tampilan dan pengelompokan per hari, pakai `toLocal()`.
 
 ### 6. Foto disimpan sebagai nama file, bukan path lengkap
 
-Database hanya menyimpan `photo_file_name` (misalnya `3f2a….jpg`). Path lengkapnya disusun saat runtime oleh `PhotoStorage.resolve`, karena path folder documents di iOS berubah setiap kali app diinstal ulang atau diupdate.
+Dokumen meal hanya menyimpan `photo_file_name` (misalnya `3f2a….jpg`). Path lengkapnya disusun saat runtime oleh `PhotoStorage.resolve`, karena path folder documents di iOS berubah setiap kali app diinstal ulang atau diupdate. Foto tidak disinkron (spec D35): di HP lain atau setelah install ulang, `resolve` mengembalikan `null` dan UI menampilkan placeholder.
 
 ### 7. Provider ditulis manual, memakai `Notifier` / `AsyncNotifier`
 
@@ -174,11 +175,19 @@ Jangan pakai `@riverpod`, `riverpod_annotation`, atau `build_runner`. Jangan pak
 
 ### 8. Business logic di fungsi murni
 
-Total harian (`summarizeDay`), pengelompokan per hari (`groupByDay`), label hari (`dayLabel`), validasi output AI (`parseAnalysis`), validasi target kalori, dan pesan error (`errorMessage`) adalah fungsi murni yang di-test. Controller hanya menyambungkan semuanya ke UI.
+Total harian (`summarizeDay`), pengelompokan per hari (`groupByDay`), label hari (`dayLabel`), validasi output AI (`parseAnalysis`), validasi target kalori, pemetaan error auth dan Firestore (`authError`, `firestoreError`), inisial avatar (`initialOf`), dan pesan error (`errorMessage`) adalah fungsi murni yang di-test. Controller hanya menyambungkan semuanya ke UI.
 
 ### 9. Tidak ada nilai visual yang di-hardcode di widget
 
 Warna, ukuran font, dan radius diambil dari theme (`Theme.of(context)`, `VoltryColors`, `VoltryText`). Tidak boleh ada `Color(0xFF…)` atau `TextStyle(fontSize: …)` langsung di widget.
+
+### 10. Tulisan ke Firestore tidak menunggu server
+
+`set()` dan `delete()` di Firestore baru selesai saat server menerima perubahannya, dan itu tidak pernah terjadi saat offline. Repository Firestore mengirim tulisan lewat `unawaited(...)` + `catchError` yang mencetak `debugPrint` (spec D37), lalu langsung kembali. Firestore sudah memperbarui cache lokalnya dan mengirim antreannya saat online. **Jangan `await` tulisan Firestore** di repository atau controller, karena Save, Delete, dan ubah target akan macet saat offline.
+
+### 11. Data per user hanya dibaca di dalam shell yang sudah login
+
+`mealLogRepositoryProvider` dan `calorieTargetRepositoryProvider` memakai `uid` dari `currentUserProvider`. Provider itu melempar `StateError` kalau dibaca sebelum ada yang login, dan sengaja **tidak ikut berubah saat sign out** (tetap user terakhir sampai akun lain login), supaya Home dan History tidak dibangun ulang tanpa user selama transisi ke Sign in. Jangan membaca provider data per user dari layar Sign in atau dari kode yang jalan sebelum login. Untuk tahu apakah user sedang login, pakai `authStateProvider`.
 
 ---
 
@@ -230,7 +239,7 @@ class MealLog {
 }
 ```
 
-- Field `final` dan `const` constructor. Key map memakai snake_case, sesuai nama kolom.
+- Field `final` dan `const` constructor. Key map memakai snake_case, sesuai nama field di dokumen Firestore.
 - `copyWith` hanya ditambahkan ke model yang memang diedit.
 - State yang punya beberapa kondisi memakai `sealed class` (misalnya `AnalyzeState`, `AnalysisResult`).
 
@@ -238,7 +247,10 @@ class MealLog {
 
 ```dart
 final mealLogRepositoryProvider = Provider<MealLogRepository>(
-  (ref) => LocalMealLogRepository(ref.watch(databaseProvider)),
+  (ref) => FirestoreMealLogRepository(
+    ref.watch(firestoreProvider),
+    ref.watch(currentUserProvider.select((user) => user.uid)),
+  ),
 );
 
 final mealLogsControllerProvider =
@@ -251,7 +263,7 @@ class MealLogsController extends AsyncNotifier<List<MealLog>> {
 ```
 
 - Nama provider diakhiri dengan `Provider`. Provider ditulis di file yang sama dengan class yang disediakannya.
-- `databaseProvider` dan `sharedPreferencesProvider` melempar `UnimplementedError` dan di-override di `main()` (serta di test).
+- `sharedPreferencesProvider` melempar `UnimplementedError` dan di-override di `main()` (serta di test). Di test, `firestoreProvider` di-override dengan `FakeFirebaseFirestore` dan `authRepositoryProvider` dengan `FakeAuthRepository`.
 
 ---
 
@@ -284,7 +296,7 @@ Visual **Candy Sport**. Referensinya ada di `docs/design/visual-direction.png`. 
 
 ## Do Not
 
-- **Jangan bangun fitur di luar scope tahap yang sedang dikerjakan.** Daftar yang di luar scope Tahap 1 ada di spec §11: login/cloud, edit hasil, rincian per item, target makro, saran AI, dark mode, i18n, satuan imperial, App Check, rate limiting, rilis ke store, dan notifikasi.
+- **Jangan bangun fitur di luar scope tahap yang sedang dikerjakan.** Di luar scope Tahap 2 (spec Tahap 2 §11): sinkron foto, hapus akun, email/password, Sign in with Apple, update real-time, migrasi data Tahap 1, test Rules dengan emulator, dan layar profil atau settings. Daftar Tahap 1 (spec Tahap 1 §11) tetap berlaku: edit hasil, rincian per item, target makro, saran AI, dark mode, i18n, satuan imperial, App Check, rate limiting, rilis ke store, dan notifikasi.
 - **Jangan pasang package di luar daftar Dependencies.**
 - **Jangan commit secret atau konfigurasi Firebase** (Aturan Keras 1).
 - **Jangan tinggalkan placeholder, TODO, atau kode yang dikomentari-mati.**
@@ -300,8 +312,9 @@ Pasang lewat `flutter pub add` (atau `flutter pub add --dev`). Jangan menulis an
 | Jenis | Package |
 | --- | --- |
 | App (sudah ada) | `firebase_ai`, `image_picker`, `lottie`, `cupertino_icons` |
-| App (Tahap 1) | `flutter_riverpod`, `go_router`, `firebase_core`, `sqflite`, `path_provider`, `path`, `shared_preferences`, `uuid`, `intl` |
-| Dev (Tahap 1) | `sqflite_common_ffi` |
+| App (Tahap 1) | `flutter_riverpod`, `go_router`, `firebase_core`, `path_provider`, `path`, `shared_preferences`, `uuid`, `intl` |
+| App (Tahap 2) | `firebase_auth`, `google_sign_in`, `cloud_firestore` |
+| Dev (Tahap 2) | `fake_cloud_firestore` |
 | Dev (ikon app, D30) | `flutter_launcher_icons` |
 
 **Jangan pasang tanpa diminta:** `freezed`, `json_serializable`, `build_runner`, `riverpod_generator`, `riverpod_annotation`, `mocktail`, `google_fonts`, `dio`, `get_it`, `provider`, `flutter_bloc`, `hive`, `isar`, `drift`, dan SDK LLM lain selain `firebase_ai`.
