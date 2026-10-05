@@ -16,6 +16,7 @@ import '../../../../core/widgets/pill_badge.dart';
 import '../../../../core/widgets/stat_tile.dart';
 import '../../../../core/widgets/voltry_nav_bar.dart';
 import '../../../analysis/presentation/widgets/ai_model_button.dart';
+import '../../../auth/presentation/widgets/account_avatar.dart';
 import '../../../calorie_target/domain/calorie_target_rules.dart';
 import '../../../calorie_target/presentation/controllers/calorie_target_controller.dart';
 import '../../../calorie_target/presentation/widgets/calorie_target_dialog.dart';
@@ -86,11 +87,10 @@ class _HomeContent extends ConsumerWidget {
         VoltryNavBar.reservedHeight,
       ),
       children: [
-        // The title is short and keeps its width. The model name gives way
+        // The title and the avatar keep their width. The model name gives way
         // instead, with an ellipsis, when a large system text size leaves no
-        // room for both.
+        // room for all three.
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +103,14 @@ class _HomeContent extends ConsumerWidget {
               ],
             ),
             const SizedBox(width: 12),
-            const Flexible(child: AiModelButton()),
+            const Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: AiModelButton(),
+              ),
+            ),
+            const SizedBox(width: 8),
+            const AccountButton(),
           ],
         ),
         const SizedBox(height: 16),
