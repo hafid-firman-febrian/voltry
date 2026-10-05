@@ -11,6 +11,10 @@ import '../../../fakes/fake_photo_storage.dart';
 import '../../../fixtures/meal_log_fixtures.dart';
 
 void main() {
+  // The controller listens for the app returning to the foreground, which
+  // needs the widgets binding even outside a widget test.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late FakeMealLogRepository repository;
   late FakePhotoStorage photos;
   late ProviderContainer container;
@@ -90,6 +94,34 @@ void main() {
 
     expect(container.read(mealLogsControllerProvider).value, [older]);
     expect(repository.logs, [older]);
+  });
+
+  test('reload shows meals saved on another device', () async {
+    await load();
+    repository.logs.add(newer);
+
+    await controller().reload();
+
+    expect(container.read(mealLogsControllerProvider).value, [newer, older]);
+  });
+
+  test('reload keeps the list on screen when fetching fails', () async {
+    await load();
+    repository.failWith = const NetworkException('unavailable');
+
+    await controller().reload();
+
+    expect(container.read(mealLogsControllerProvider).value, [older]);
+  });
+
+  test('reload after a failed load tries the whole load again', () async {
+    repository.failWith = const NetworkException('unavailable');
+    await expectLater(load(), throwsA(isA<NetworkException>()));
+    repository.failWith = null;
+
+    await controller().reload();
+
+    expect(await load(), [older]);
   });
 
   test('purgePhoto deletes the file and swallows storage errors', () async {

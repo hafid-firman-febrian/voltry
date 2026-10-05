@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_exception.dart';
@@ -19,8 +20,29 @@ final mealLogsControllerProvider =
 /// this single list with the pure functions in daily_summary.dart.
 class MealLogsController extends AsyncNotifier<List<MealLog>> {
   @override
-  Future<List<MealLog>> build() =>
-      ref.watch(mealLogRepositoryProvider).fetchAll();
+  Future<List<MealLog>> build() {
+    final lifecycle = AppLifecycleListener(onResume: reload);
+    ref.onDispose(lifecycle.dispose);
+    return ref.watch(mealLogRepositoryProvider).fetchAll();
+  }
+
+  /// Fetches again without going back to a spinner, so meals saved on
+  /// another device show up when the app returns to the foreground. A failed
+  /// fetch keeps the list on screen: it is still right, only perhaps not
+  /// complete.
+  Future<void> reload() async {
+    if (!state.hasValue) {
+      ref.invalidateSelf();
+      return;
+    }
+    try {
+      final logs = await ref.read(mealLogRepositoryProvider).fetchAll();
+      if (ref.mounted) state = AsyncData(logs);
+    } on AppException {
+      // Firestore keeps retrying in the background, and the next resume or
+      // app start fetches again.
+    }
+  }
 
   Future<void> add(MealLog log) async {
     await ref.read(mealLogRepositoryProvider).insert(log);

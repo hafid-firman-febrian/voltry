@@ -138,6 +138,30 @@ void main() {
     expect(find.text('50%'), findsOneWidget);
   });
 
+  testWidgets('returning to the app shows meals saved on another device', (
+    tester,
+  ) async {
+    final repository = FakeMealLogRepository([lunch]);
+    await pumpVoltryApp(tester, repository: repository);
+    expect(find.text('Soto ayam'), findsNothing);
+
+    repository.logs.add(dinner);
+    for (final state in [
+      AppLifecycleState.inactive,
+      AppLifecycleState.hidden,
+      AppLifecycleState.paused,
+      AppLifecycleState.hidden,
+      AppLifecycleState.inactive,
+      AppLifecycleState.resumed,
+    ]) {
+      tester.binding.handleAppLifecycleStateChanged(state);
+    }
+    await tester.pumpAndSettle();
+
+    expect(find.text('Soto ayam'), findsOneWidget);
+    expect(find.text('1,450'), findsOneWidget);
+  });
+
   group('today follows the calendar', () {
     final lateSnack = mealLog(
       id: 'late',
