@@ -11,6 +11,8 @@ import '../widgets/google_sign_in_button.dart';
 class SignInPage extends ConsumerWidget {
   const SignInPage({super.key});
 
+  static const _iconSize = 96.0;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
@@ -38,8 +40,13 @@ class SignInPage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(VoltryRadius.cardLarge),
                   child: Image.asset(
                     'assets/icon/voltry-app-icon.png',
-                    width: 96,
-                    height: 96,
+                    width: _iconSize,
+                    height: _iconSize,
+                    // The source is 1024 px; decoding it at display size
+                    // keeps a ~4 MB bitmap out of memory.
+                    cacheWidth:
+                        (_iconSize * MediaQuery.devicePixelRatioOf(context))
+                            .round(),
                     excludeFromSemantics: true,
                   ),
                 ),

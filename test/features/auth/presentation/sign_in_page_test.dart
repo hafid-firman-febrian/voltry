@@ -17,6 +17,14 @@ void main() {
   final googleLogo = find.image(
     const AssetImage('assets/images/google-logo.png'),
   );
+  // Decoded at its 96 px display size on the 3x test screen, not at the
+  // 1024 px of the source file.
+  final appIcon = find.image(
+    const ResizeImage(
+      AssetImage('assets/icon/voltry-app-icon.png'),
+      width: 288,
+    ),
+  );
 
   // The test font draws every glyph as wide as the font size, so the content
   // only leaves room to spare (and shows how it is laid out) on a wide screen.
@@ -42,10 +50,7 @@ void main() {
   testWidgets('Sign in shows the app icon with the app name', (tester) async {
     await pumpVoltryApp(tester, auth: FakeAuthRepository());
 
-    expect(
-      find.image(const AssetImage('assets/icon/voltry-app-icon.png')),
-      findsOneWidget,
-    );
+    expect(appIcon, findsOneWidget);
     expect(find.text('Voltry'), findsOneWidget);
   });
 
@@ -72,7 +77,7 @@ void main() {
 
     final middle = tester.getCenter(find.byType(Scaffold)).dx;
     for (final finder in [
-      find.image(const AssetImage('assets/icon/voltry-app-icon.png')),
+      appIcon,
       find.text('Voltry'),
       find.text('Snap a meal, get its calories and macros.'),
       googleButton(),
