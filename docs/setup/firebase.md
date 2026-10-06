@@ -30,7 +30,10 @@ Login Google di Android menolak app yang SHA-1 signing-nya tidak terdaftar.
 keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
 ```
 
-Salin nilai `SHA1`, lalu buka **Project settings → Your apps → app Android → Add fingerprint** dan tempel nilainya.
+Salin nilai `SHA1`, lalu buka **Project settings → General → Your apps**:
+
+- **Belum ada app Android** (project baru): **Add app → Android**, isi package name `com.example.voltry`, tempel SHA-1 di kolom *Debug signing certificate SHA-1*, lalu **Register app**. Langkah unduh `google-services.json` dan menambah Firebase SDK boleh dilewati, karena langkah 5 yang mengurusnya dan memakai app yang baru didaftarkan ini.
+- **Sudah ada app Android:** pilih app itu, **Add fingerprint**, lalu tempel nilainya.
 
 ## 5. Hubungkan app ke project
 

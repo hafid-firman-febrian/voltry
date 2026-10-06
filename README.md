@@ -203,7 +203,7 @@ There is no code generation step. `flutter test` and `flutter analyze` work righ
 1. In the [Firebase console](https://console.firebase.google.com), create a project, then open **Build → AI Logic → Get started** and choose **Gemini Developer API**.
 2. Open **Build → Authentication → Sign-in method** and enable **Google**.
 3. Open **Build → Firestore Database → Create database**, then paste [firestore.rules](firestore.rules) into the **Rules** tab and publish.
-4. Add your debug keystore's SHA-1 to the Android app under **Project settings**:
+4. Add your debug keystore's SHA-1 under **Project settings → Your apps**. On a new project, first register an Android app with the package name `com.example.voltry`; `flutterfire configure` in the next step reuses it:
 
    ```bash
    keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
