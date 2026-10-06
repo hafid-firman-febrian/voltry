@@ -16,11 +16,11 @@ Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-desi
 
 Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesai ditulis, atau satu tahap selesai. Progres per task **tidak** dicatat di sini, tapi di checkbox plan.
 
-- **Tahap aktif:** Tahap 2 (login Google + sinkron Firestore). Spec disetujui owner pada 2026-10-05
-- **Branch:** `feat/auth-sync`, dibuat dari `main`
+- **Tahap aktif:** Tahap 2 selesai pada 2026-10-06 (kode, README, dan cek di device)
+- **Branch:** `feat/auth-sync`, menunggu keputusan owner untuk merge ke `main`
 - **Spec:** `docs/superpowers/specs/2026-10-05-voltry-auth-sync-design.md` (lokal, decision log D31–D44). Spec Tahap 1: `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (D1–D30)
-- **Plan:** `docs/superpowers/plans/2026-10-05-voltry-auth-sync.md` (lokal). Plan sebelumnya: `2026-10-01-voltry-food-analyzer.md` (selesai) dan `2026-10-03-voltry-model-picker.md` (Task 5 Step 2, cek di device, dikerjakan bersama cek di device Task 10 plan Tahap 2)
-- **Langkah berikutnya:** kerjakan plan Tahap 2 mulai dari task pertama yang masih `- [ ]`
+- **Plan:** `docs/superpowers/plans/2026-10-05-voltry-auth-sync.md` (lokal, semua task selesai). Plan sebelumnya (`2026-10-01-voltry-food-analyzer.md`, `2026-10-03-voltry-model-picker.md`) juga selesai semua
+- **Langkah berikutnya:** merge `feat/auth-sync` ke `main` setelah owner setuju, lalu rekam video demo
 
 ---
 
@@ -69,7 +69,7 @@ Perbarui decision log di spec (tambahkan D16, D17, dan seterusnya) dan bagian te
 ## Roadmap
 
 1. **Tahap 1: analyzer lokal** (selesai 2026-10-03). Foto → AI → hasil → riwayat + total harian + target kalori.
-2. **Tahap 2: login + sinkron cloud** (sekarang). Login Google wajib, riwayat dan target kalori disimpan di Firestore per akun. Spec: `2026-10-05-voltry-auth-sync-design.md`.
+2. **Tahap 2: login + sinkron cloud** (selesai 2026-10-06). Login Google wajib, riwayat dan target kalori disimpan di Firestore per akun. Spec: `2026-10-05-voltry-auth-sync-design.md`.
 
 Kerjakan satu tahap sampai skenario demonya jalan, baru lanjut ke tahap berikutnya.
 

@@ -40,7 +40,7 @@ The sign-in screen and the three main screens:
 
 | Sign in | Home | Analyze | History |
 | :---: | :---: | :---: | :---: |
-| <img src="docs/screenshots/sign-in.png" width="100%" alt="Sign in: the app icon and a Continue with Google button"> | <img src="docs/screenshots/home.png" width="100%" alt="Home: today's calories against the target, macro totals, today's meals, and the account avatar"> | <img src="docs/screenshots/analyze.png" width="100%" alt="Analyze: the AI estimate for a photo, with Save and Retake"> | <img src="docs/screenshots/history.png" width="100%" alt="History: meals grouped by day with daily totals"> |
+| <img src="docs/screenshots/sign-in.jpg" width="100%" alt="Sign in: the app icon and a Continue with Google button"> | <img src="docs/screenshots/home.jpg" width="100%" alt="Home: today's calories against the target, macro totals, today's meals, and the account avatar"> | <img src="docs/screenshots/analyze.jpg" width="100%" alt="Analyze: the AI estimate for a photo, with Save and Retake"> | <img src="docs/screenshots/history.jpg" width="100%" alt="History: meals grouped by day with daily totals"> |
 | The app icon and one Google-style button: Continue with Google | Today's calories against the target, macro tiles, today's meals, the active AI model, and the account avatar | The AI estimate for one photo, with Save and Retake | Meals grouped by day with daily totals, swipe to delete |
 
 ---
