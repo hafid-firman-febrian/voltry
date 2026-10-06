@@ -59,23 +59,19 @@ Perintah yang sama juga mengubah file Gradle Android (plugin `com.google.gms.goo
 
 ## 6. Isi client ID Google di `Info.plist` (iOS)
 
-Google Sign-In di iOS membaca `GIDClientID` dan butuh URL scheme `REVERSED_CLIENT_ID` di `ios/Runner/Info.plist`. Nilainya diambil dari `GoogleService-Info.plist` yang baru:
+Google Sign-In di iOS membaca `GIDClientID` dan butuh URL scheme `REVERSED_CLIENT_ID` di `ios/Runner/Info.plist`. Kedua key itu sudah ada di repo, berisi client ID project Firebase asli, jadi nilainya **diganti** (`Set`, bukan `Add`) dengan milik project kamu dari `GoogleService-Info.plist` yang baru:
 
 ```bash
 CLIENT_ID=$(/usr/libexec/PlistBuddy -c "Print :CLIENT_ID" ios/Runner/GoogleService-Info.plist)
 REVERSED_CLIENT_ID=$(/usr/libexec/PlistBuddy -c "Print :REVERSED_CLIENT_ID" ios/Runner/GoogleService-Info.plist)
 /usr/libexec/PlistBuddy \
-  -c "Add :GIDClientID string $CLIENT_ID" \
-  -c "Add :CFBundleURLTypes array" \
-  -c "Add :CFBundleURLTypes:0 dict" \
-  -c "Add :CFBundleURLTypes:0:CFBundleTypeRole string Editor" \
-  -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes array" \
-  -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string $REVERSED_CLIENT_ID" \
+  -c "Set :GIDClientID $CLIENT_ID" \
+  -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 $REVERSED_CLIENT_ID" \
   ios/Runner/Info.plist
 plutil -lint ios/Runner/Info.plist
 ```
 
-Kalau key-nya sudah ada (misalnya saat pindah ke project Firebase lain), ganti `Add` dengan `Set` untuk `:GIDClientID` dan `:CFBundleURLTypes:0:CFBundleURLSchemes:0`, lalu hapus empat perintah `Add` lainnya.
+`Add` tidak bisa dipakai di sini: untuk key yang sudah ada, `PlistBuddy` hanya mencetak "Entry Already Exists" dan client ID lama tetap terpakai, sehingga login Google di iOS gagal.
 
 Perubahan `Info.plist` ini **di-commit** (spec D40). OAuth client ID adalah identifier publik, bukan rahasia, dan tidak memberi akses ke Gemini maupun Firestore.
 
