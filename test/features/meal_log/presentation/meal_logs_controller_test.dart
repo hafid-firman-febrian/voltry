@@ -120,6 +120,17 @@ void main() {
     expect(container.read(mealLogsControllerProvider).value, [older]);
   });
 
+  test('a reload still out when the app shuts down ends quietly', () async {
+    await load();
+    repository.gate = Completer<void>();
+    final reload = controller().reload();
+
+    container.dispose();
+    repository.gate!.complete();
+
+    await expectLater(reload, completes);
+  });
+
   test('reload after a failed load tries the whole load again', () async {
     repository.failWith = const NetworkException('unavailable');
     await expectLater(load(), throwsA(isA<NetworkException>()));

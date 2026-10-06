@@ -38,13 +38,11 @@ class MealLogsController extends AsyncNotifier<List<MealLog>> {
     final repository = ref.read(mealLogRepositoryProvider);
     try {
       final logs = await repository.fetchAll();
+      if (!ref.mounted) return;
       // Another account may have signed in while this fetch was out. Its
       // rebuild already loaded the right meals, so drop the stale answer.
-      final stillCurrent = identical(
-        ref.read(mealLogRepositoryProvider),
-        repository,
-      );
-      if (ref.mounted && stillCurrent) state = AsyncData(logs);
+      if (!identical(ref.read(mealLogRepositoryProvider), repository)) return;
+      state = AsyncData(logs);
     } on AppException {
       // Firestore keeps retrying in the background, and the next resume or
       // app start fetches again.
