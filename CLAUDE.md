@@ -6,7 +6,7 @@ Voltry adalah app Flutter untuk menganalisis makanan dari foto. User login denga
 
 Ini **proyek portofolio untuk Upwork**. Hasil akhirnya repo GitHub, README, dan video demo. App hanya dijalankan oleh owner (tidak ada rilis ke store atau APK publik). Prinsip scope: **kecil dan cepat selesai, dengan satu alur utama yang rapi**. Bahasa UI: Inggris. Satuan: metrik. Light mode saja.
 
-Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (Tahap 1, decision log D1–D30) dan `docs/superpowers/specs/2026-10-05-voltry-auth-sync-design.md` (Tahap 2, D31–D43). **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log di sana menjelaskan alasan tiap keputusan.
+Spec lengkap ada di `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (Tahap 1, decision log D1–D30) dan `docs/superpowers/specs/2026-10-05-voltry-auth-sync-design.md` (Tahap 2, D31–D44). **Baca sebelum mengerjakan area yang belum kamu kenal.** Decision log di sana menjelaskan alasan tiap keputusan.
 
 `../arsip-voltry` berisi Voltry versi lama (AI fitness coach, Supabase + Claude) yang sudah ditinggalkan. **Spec, plan, dan aturannya tidak berlaku di sini.** Dari arsip itu, yang dipakai hanya design system Candy Sport.
 
@@ -18,7 +18,7 @@ Bagian ini diperbarui setiap kali **tahap** berubah: spec disetujui, plan selesa
 
 - **Tahap aktif:** Tahap 2 (login Google + sinkron Firestore). Spec disetujui owner pada 2026-10-05
 - **Branch:** `feat/auth-sync`, dibuat dari `main`
-- **Spec:** `docs/superpowers/specs/2026-10-05-voltry-auth-sync-design.md` (lokal, decision log D31–D43). Spec Tahap 1: `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (D1–D30)
+- **Spec:** `docs/superpowers/specs/2026-10-05-voltry-auth-sync-design.md` (lokal, decision log D31–D44). Spec Tahap 1: `docs/superpowers/specs/2026-10-01-voltry-food-analyzer-design.md` (D1–D30)
 - **Plan:** `docs/superpowers/plans/2026-10-05-voltry-auth-sync.md` (lokal). Plan sebelumnya: `2026-10-01-voltry-food-analyzer.md` (selesai) dan `2026-10-03-voltry-model-picker.md` (Task 5 Step 2, cek di device, dikerjakan bersama cek di device Task 10 plan Tahap 2)
 - **Langkah berikutnya:** kerjakan plan Tahap 2 mulai dari task pertama yang masih `- [ ]`
 

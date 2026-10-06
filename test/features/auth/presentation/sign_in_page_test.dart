@@ -10,6 +10,21 @@ import '../../../helpers/pump_voltry_app.dart';
 
 void main() {
   Finder continueButton() => find.text('Continue with Google');
+  Finder googleButton() => find.ancestor(
+    of: continueButton(),
+    matching: find.byWidgetPredicate((widget) => widget is ButtonStyleButton),
+  );
+  final googleLogo = find.image(
+    const AssetImage('assets/images/google-logo.png'),
+  );
+
+  // The test font draws every glyph as wide as the font size, so the content
+  // only leaves room to spare (and shows how it is laid out) on a wide screen.
+  Future<void> pumpOnWideScreen(WidgetTester tester) async {
+    await pumpVoltryApp(tester, auth: FakeAuthRepository());
+    tester.view.physicalSize = const Size(2400, 2532);
+    await tester.pumpAndSettle();
+  }
 
   testWidgets('signed out, the app opens on Sign in without the navbar', (
     tester,
@@ -34,6 +49,38 @@ void main() {
     expect(find.text('Voltry'), findsOneWidget);
   });
 
+  testWidgets('the Google button shows the Google logo', (tester) async {
+    await pumpVoltryApp(tester, auth: FakeAuthRepository());
+
+    expect(
+      find.descendant(of: googleButton(), matching: googleLogo),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('the Google button is only as wide as its content', (
+    tester,
+  ) async {
+    await pumpOnWideScreen(tester);
+
+    final screenWidth = tester.getSize(find.byType(Scaffold)).width;
+    expect(tester.getSize(googleButton()).width, lessThan(screenWidth - 32));
+  });
+
+  testWidgets('Sign in centers its content across the screen', (tester) async {
+    await pumpOnWideScreen(tester);
+
+    final middle = tester.getCenter(find.byType(Scaffold)).dx;
+    for (final finder in [
+      find.image(const AssetImage('assets/icon/voltry-app-icon.png')),
+      find.text('Voltry'),
+      find.text('Snap a meal, get its calories and macros.'),
+      googleButton(),
+    ]) {
+      expect(tester.getCenter(finder).dx, moreOrLessEquals(middle));
+    }
+  });
+
   testWidgets('signing in moves on to Home', (tester) async {
     await pumpVoltryApp(tester, auth: FakeAuthRepository());
 
@@ -52,10 +99,9 @@ void main() {
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    expect(
-      tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
-      isNull,
-    );
+    expect(googleLogo, findsNothing);
+    expect(continueButton(), findsOneWidget);
+    expect(tester.widget<ButtonStyleButton>(googleButton()).onPressed, isNull);
 
     auth.gate!.complete();
     await tester.pumpAndSettle();

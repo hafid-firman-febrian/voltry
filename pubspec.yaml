@@ -72,6 +72,7 @@ flutter:
   assets:
     - assets/animations/loading.json
     - assets/icon/voltry-app-icon.png
+    - assets/images/google-logo.png
 
   fonts:
     - family: Urbanist
