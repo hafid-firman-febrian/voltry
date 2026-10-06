@@ -71,6 +71,7 @@ flutter:
 
   assets:
     - assets/animations/loading.json
+    - assets/icon/voltry-app-icon.png
 
   fonts:
     - family: Urbanist

@@ -24,6 +24,16 @@ void main() {
     expect(find.byType(VoltryNavBar), findsNothing);
   });
 
+  testWidgets('Sign in shows the app icon with the app name', (tester) async {
+    await pumpVoltryApp(tester, auth: FakeAuthRepository());
+
+    expect(
+      find.image(const AssetImage('assets/icon/voltry-app-icon.png')),
+      findsOneWidget,
+    );
+    expect(find.text('Voltry'), findsOneWidget);
+  });
+
   testWidgets('signing in moves on to Home', (tester) async {
     await pumpVoltryApp(tester, auth: FakeAuthRepository());
 

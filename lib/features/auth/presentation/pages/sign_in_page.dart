@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_exception.dart';
 import '../../../../core/theme/theme_context.dart';
-import '../../../../core/widgets/hero_card.dart';
+import '../../../../core/theme/voltry_radius.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../../../core/widgets/show_message.dart';
 import '../controllers/sign_in_controller.dart';
@@ -30,20 +30,24 @@ class SignInPage extends ConsumerWidget {
           // error snack bar would cover the button the user needs to retry.
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HeroCard(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24),
-                  child: Text(
-                    'Voltry',
-                    style: text.display.copyWith(color: colors.onCoral),
-                  ),
+              // The launcher icon source is a full square; rounding it here
+              // makes it look like the icon on the home screen.
+              ClipRRect(
+                borderRadius: BorderRadius.circular(VoltryRadius.cardLarge),
+                child: Image.asset(
+                  'assets/icon/voltry-app-icon.png',
+                  width: 96,
+                  height: 96,
+                  excludeFromSemantics: true,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 24),
+              Text('Voltry', style: text.display),
+              const SizedBox(height: 8),
               Text(
                 'Snap a meal, get its calories and macros.',
+                textAlign: TextAlign.center,
                 style: text.body.copyWith(color: colors.muted),
               ),
               const SizedBox(height: 32),
