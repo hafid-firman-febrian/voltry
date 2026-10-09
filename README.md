@@ -1,8 +1,6 @@
 <div align="center">
 
-# Voltry
-
-**Snap a meal, get its calories and macros.**
+<img src="docs/banner.png" width="70%" alt="Voltry — AI food analyzer, shown on the Analyze, Home, and History screens">
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.44-1F1A17?style=flat-square&logo=flutter&logoColor=54C5F8)
 ![Dart](https://img.shields.io/badge/Dart-3.12-1F1A17?style=flat-square&logo=dart&logoColor=40C4FF)
@@ -30,6 +28,7 @@ Voltry is a Flutter app for iOS and Android that estimates the nutrition of a me
 - [AI & Security](#ai--security)
 - [Build & Distribution](#build--distribution)
 - [Testing](#testing)
+- [Changelog](#changelog)
 - [License](#license)
 
 ---
@@ -307,7 +306,7 @@ flutter test --coverage   # writes coverage/lcov.info
 flutter analyze           # lint
 ```
 
-186 tests in 36 files run without a device, network, Firebase config or Google account. Firestore runs in memory through `fake_cloud_firestore`, sign-in goes through a hand-written `FakeAuthRepository`, `shared_preferences` uses mock initial values, files go to temporary directories, and every fake in `test/fakes/` is written by hand, with no mocking library:
+187 tests in 36 files run without a device, network, Firebase config or Google account. Firestore runs in memory through `fake_cloud_firestore`, sign-in goes through a hand-written `FakeAuthRepository`, `shared_preferences` uses mock initial values, files go to temporary directories, and every fake in `test/fakes/` is written by hand, with no mocking library:
 
 | Scope | Covered |
 | --- | --- |
@@ -317,6 +316,12 @@ flutter analyze           # lint
 | Widgets | Sign in (centered layout, the Google button's logo and width, progress, cancel, retrying while the error is showing), the account avatar and sheet (initial fallback, Cancel, signing out with no error frame on the way, switching accounts), Home (ring, over target, list, empty, failed target load, refresh on resume), Analyze (all four states, Switch AI model on quota), History, Meal detail, the target dialog, the AI model sheet, the full snap → analyze → save flow, the design system components and theme |
 
 Real Google sign-in, real Firestore with its offline cache, Gemini calls and the camera are not automated. They are checked by hand on a device: sign in, save a meal, reinstall, sign in again, and use the app in airplane mode.
+
+---
+
+## Changelog
+
+Release history and upgrade notes live in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
